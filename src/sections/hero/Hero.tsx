@@ -1,5 +1,5 @@
-const PHOTO_URL = './images/hero.webp';
-const LOCAL_LOGO_URL = './images/ayene-event-logo.png';
+const PHOTO_URL = './images/hero-figma.png';
+const FALLBACK_PHOTO_URL = './images/hero.webp';
 
 export function Hero() {
   return (
@@ -39,27 +39,19 @@ export function Hero() {
       </div>
 
       <div className="flex w-full shrink-0 flex-col items-center lg:w-[544px]">
-        <div className="relative aspect-[16/9] w-full max-w-[544px] overflow-hidden rounded-[22px] border-[6px] border-[#E0C89F] bg-[#F9F7F1] shadow-[0_12px_28px_rgba(24,43,94,0.08)] sm:rounded-[26px] sm:border-[7px]">
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#F9F7F1] px-6 text-center sm:px-8">
-            <img
-              src={LOCAL_LOGO_URL}
-              alt=""
-              aria-hidden="true"
-              className="mb-3 w-[170px] max-w-[70%] object-contain opacity-95 sm:mb-4 sm:w-[210px]"
-            />
-            <p className="text-[14px] font-medium text-[#364E92] sm:text-[18px]">
-              مسئله را ببین<span className="text-[#FB8C74]">؛</span> راهکار را بساز
-            </p>
-          </div>
-
+        <div className="relative aspect-[544/317] w-full max-w-[544px] overflow-hidden rounded-[22px] border-[6px] border-[#E0C89F] bg-[#F9F7F1] shadow-[0_12px_28px_rgba(24,43,94,0.08)] sm:rounded-[26px] sm:border-[7px]">
           <img
             src={PHOTO_URL}
             alt="تیم کاری رویداد آینه"
-            className="relative z-10 h-full w-full object-cover object-center"
+            className="h-full w-full object-cover object-center"
             loading="eager"
             decoding="async"
+            fetchPriority="high"
             onError={(event) => {
-              event.currentTarget.style.display = 'none';
+              const image = event.currentTarget;
+              if (image.dataset.fallbackApplied === 'true') return;
+              image.dataset.fallbackApplied = 'true';
+              image.src = FALLBACK_PHOTO_URL;
             }}
           />
         </div>
