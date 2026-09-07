@@ -12,7 +12,11 @@ import { FooterSection } from './sections/FooterSection';
 
 export default function App() {
   return (
-    <div dir="rtl" className="min-h-screen bg-[#FAF9F7]" style={{ fontFamily: "'Vazirmatn', sans-serif" }}>
+    <div
+      dir="rtl"
+      className="min-h-screen overflow-x-hidden bg-[#FAF9F7]"
+      style={{ fontFamily: "'Vazirmatn', sans-serif" }}
+    >
       <section id="home" className="bg-[#FAF9F7]">
         <div className="mx-auto max-w-[1440px] px-6 lg:px-[100px]">
           <Header />
