@@ -27,16 +27,11 @@ export function StatsBar() {
             className={`font-extrabold leading-[1.2] text-[#182B5E] ${
               stat.emphasis ? 'text-[30px] lg:text-[34px]' : 'text-[22px] lg:text-[22px]'
             }`}
-            style={{
-              fontFamily: 'Estedad, Vazirmatn, sans-serif',
-              unicodeBidi: 'isolate',
-            }}
+            style={{ fontFamily: 'Estedad, Vazirmatn, sans-serif', unicodeBidi: 'isolate' }}
           >
             {stat.value}
           </span>
-          <span className="text-center text-[13px] font-medium text-[#414C66] lg:text-[14px]">
-            {stat.label}
-          </span>
+          <span className="text-center text-[13px] font-medium text-[#414C66] lg:text-[14px]">{stat.label}</span>
         </div>
       ))}
     </div>
