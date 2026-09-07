@@ -19,7 +19,7 @@ export function SupportSection() {
           </h2>
           <div className="mb-4 h-[5px] w-14 rounded-[3px] bg-[#FB8C74]" />
           <p className="text-[18px] font-normal leading-[1.7] text-[#334061] lg:text-[20px]">
-            پروژه‌های برتر وارد مرحله پایلوت می‌شوند و از حمایت اجرایی و تخصصی آینه بهره می‌گیرند.
+            پروژه‌های منتخب وارد مرحله پایلوت می‌شوند و متناسب با ارزیابی و نیاز پروژه، از حمایت اجرایی و تخصصی آینه بهره می‌گیرند.
           </p>
         </div>
         <div className="mb-5 grid grid-cols-1 gap-5 md:grid-cols-2 lg:gap-10">
