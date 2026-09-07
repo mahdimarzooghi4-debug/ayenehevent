@@ -4,10 +4,10 @@ interface StatItem {
 }
 
 const stats: StatItem[] = [
-  { value: '۵', label: 'محور رویداد' },
-  { value: '۱۵', label: 'مسئله مشخص' },
-  { value: '۹', label: 'مرحله در مسیر رویداد' },
-  { value: '۲', label: 'مسیر ورود' },
+  { value: '۵+', label: 'محور رویداد' },
+  { value: '۱۵+', label: 'مسئله مشخص' },
+  { value: '۹+', label: 'مرحله در مسیر رویداد' },
+  { value: '۲+', label: 'مسیر ورود' },
 ];
 
 export function StatsBar() {

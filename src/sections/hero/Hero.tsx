@@ -1,5 +1,5 @@
-const PHOTO_URL = 'https://cdn.codia.ai/figma/QAnV3aT20HZ7Y2PPnvuBCJ/img-5a1171a7dc1a87fc.png';
-const LOCAL_LOGO_URL = './images/ayene-event-logo.webp';
+const PHOTO_URL = `${import.meta.env.BASE_URL}images/hero.webp`;
+const LOCAL_LOGO_URL = `${import.meta.env.BASE_URL}images/ayene-event-logo.png`;
 
 export function Hero() {
   return (
@@ -39,7 +39,7 @@ export function Hero() {
       </div>
 
       <div className="flex w-full shrink-0 flex-col items-center lg:w-[544px]">
-        <div className="relative aspect-[544/317] w-full max-w-[544px] overflow-hidden rounded-[22px] border-[6px] border-[#E0C89F] bg-white shadow-[0_12px_28px_rgba(24,43,94,0.08)] sm:rounded-[26px] sm:border-[7px]">
+        <div className="relative aspect-[16/9] w-full max-w-[544px] overflow-hidden rounded-[22px] border-[6px] border-[#E0C89F] bg-[#F9F7F1] shadow-[0_12px_28px_rgba(24,43,94,0.08)] sm:rounded-[26px] sm:border-[7px]">
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#F9F7F1] px-6 text-center sm:px-8">
             <img
               src={LOCAL_LOGO_URL}
@@ -57,6 +57,7 @@ export function Hero() {
             alt="تیم کاری رویداد آینه"
             className="relative z-10 h-full w-full object-cover object-center"
             loading="eager"
+            decoding="async"
             onError={(event) => {
               event.currentTarget.style.display = 'none';
             }}
