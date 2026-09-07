@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 
-const LOGO_URL = '/ayenehevent/images/ayene-event-logo-exact.webp';
+const LOGO_URL = `${import.meta.env.BASE_URL}images/ayene-event-logo-exact.webp`;
 
 const navLinks = [
   { label: 'معرفی آینه', href: '#about' },
@@ -21,7 +21,7 @@ export function Header() {
           <img
             src={LOGO_URL}
             alt="رویداد ملی خلاقیت و نوآوری آینه"
-            className="h-auto w-[148px] object-contain sm:w-[190px] lg:w-[230px]"
+            className="h-auto w-[150px] object-contain sm:w-[190px] lg:w-[218px]"
             width={420}
             height={140}
           />
