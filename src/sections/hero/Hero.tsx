@@ -1,5 +1,5 @@
-const PHOTO_URL = `${import.meta.env.BASE_URL}images/hero.webp`;
-const LOCAL_LOGO_URL = `${import.meta.env.BASE_URL}images/ayene-event-logo.png`;
+const PHOTO_URL = './images/hero.webp';
+const LOCAL_LOGO_URL = './images/ayene-event-logo.png';
 
 export function Hero() {
   return (
