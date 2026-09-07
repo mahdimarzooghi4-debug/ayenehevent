@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 
-const LOGO_SPRITE_URL = './images/ayene-event-logo.png';
+const LOGO_URL = './images/ayene-event-logo-exact.webp';
 
 const navLinks = [
   { label: 'معرفی آینه', href: '#about' },
@@ -9,32 +9,6 @@ const navLinks = [
   { label: 'مسیر رویداد', href: '#journey' },
   { label: 'حمایت‌ها', href: '#support' },
 ];
-
-function EventBrand() {
-  return (
-    <span
-      dir="ltr"
-      className="flex w-[132px] shrink-0 items-center justify-end gap-1 sm:w-[174px] sm:gap-1.5 lg:w-[210px]"
-      aria-label="رویداد ملی خلاقیت و نوآوری آینه"
-    >
-      <span
-        dir="rtl"
-        className="min-w-0 whitespace-nowrap text-[8px] font-medium leading-none text-[#FB8C74] sm:text-[10px] lg:text-[11px]"
-      >
-        رویداد ملی خلاقیت و نوآوری <span className="font-bold text-[#364E92]">آینه</span>
-      </span>
-
-      <span className="relative h-[44px] w-[50px] shrink-0 overflow-hidden sm:h-[56px] sm:w-[63px] lg:h-[70px] lg:w-[79px]">
-        <img
-          src={LOGO_SPRITE_URL}
-          alt=""
-          aria-hidden="true"
-          className="absolute left-0 top-0 h-full w-auto max-w-none object-contain mix-blend-multiply"
-        />
-      </span>
-    </span>
-  );
-}
 
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -50,7 +24,13 @@ export function Header() {
           aria-label="صفحه اصلی آینه"
           onClick={closeMobileMenu}
         >
-          <EventBrand />
+          <img
+            src={LOGO_URL}
+            alt="رویداد ملی خلاقیت و نوآوری آینه"
+            className="h-auto w-[132px] object-contain sm:w-[174px] lg:w-[210px]"
+            width={420}
+            height={140}
+          />
         </a>
 
         <nav className="hidden items-center gap-1 lg:flex" aria-label="ناوبری اصلی">
