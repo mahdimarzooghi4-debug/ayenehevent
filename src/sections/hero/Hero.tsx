@@ -1,4 +1,4 @@
-const PHOTO_URL = './images/hero-exact.jpg';
+const PHOTO_URL = `${import.meta.env.BASE_URL}images/hero-exact.webp`;
 
 export function Hero() {
   return (
@@ -22,16 +22,10 @@ export function Hero() {
         </p>
 
         <div className="flex w-full flex-col items-stretch gap-3 sm:w-auto sm:flex-row sm:items-center sm:gap-4">
-          <a
-            href="#register"
-            className="flex h-[54px] items-center justify-center whitespace-nowrap rounded-full bg-[#FB8C74] px-7 text-[16px] font-medium text-white transition-colors hover:bg-[#f97d62] sm:h-[58px] sm:w-[240px] sm:px-8 sm:text-[17px]"
-          >
+          <a href="#register" className="flex h-[54px] items-center justify-center whitespace-nowrap rounded-full bg-[#FB8C74] px-7 text-[16px] font-medium text-white transition-colors hover:bg-[#f97d62] sm:h-[58px] sm:w-[240px] sm:px-8 sm:text-[17px]">
             ثبت‌نام در رویداد
           </a>
-          <a
-            href="#axes"
-            className="flex h-[54px] items-center justify-center whitespace-nowrap rounded-full border border-[#364E92] bg-white px-7 text-[16px] font-medium text-[#364E92] transition-colors hover:bg-[#f0f3ff] sm:h-[58px] sm:w-[238px] sm:px-8 sm:text-[17px]"
-          >
+          <a href="#axes" className="flex h-[54px] items-center justify-center whitespace-nowrap rounded-full border border-[#364E92] bg-white px-7 text-[16px] font-medium text-[#364E92] transition-colors hover:bg-[#f0f3ff] sm:h-[58px] sm:w-[238px] sm:px-8 sm:text-[17px]">
             مشاهده نظام مسائل
           </a>
         </div>
@@ -43,8 +37,10 @@ export function Hero() {
             src={PHOTO_URL}
             alt="تیم کاری رویداد آینه"
             className="h-full w-full object-cover object-center"
+            width={1088}
+            height={634}
             loading="eager"
-            decoding="async"
+            decoding="sync"
             fetchPriority="high"
           />
         </div>
