@@ -1,5 +1,4 @@
-const PHOTO_URL = './images/hero-figma.png';
-const FALLBACK_PHOTO_URL = './images/hero.webp';
+const PHOTO_URL = './images/hero-exact.jpg';
 
 export function Hero() {
   return (
@@ -14,7 +13,7 @@ export function Hero() {
           راهکار را بساز
         </h1>
 
-        <div className="mb-5 mt-2 h-[5px] w-[116px] rounded-[3px] bg-[#FB8C74] sm:mb-6 sm:mt-3 sm:w-36" />
+        <div className="mb-5 mt-2 h-[5px] w-[92px] rounded-[3px] bg-[#FB8C74] sm:mb-6 sm:mt-3" />
 
         <p className="mb-7 w-full max-w-[590px] text-right text-[16px] font-medium leading-[30px] text-[#182B5E] sm:text-[17px] lg:mb-8 lg:text-[18px] lg:leading-[32px]">
           مسیر تبدیل مسئله‌های واقعی کمیته امداد امام خمینی(ره)
@@ -47,12 +46,6 @@ export function Hero() {
             loading="eager"
             decoding="async"
             fetchPriority="high"
-            onError={(event) => {
-              const image = event.currentTarget;
-              if (image.dataset.fallbackApplied === 'true') return;
-              image.dataset.fallbackApplied = 'true';
-              image.src = FALLBACK_PHOTO_URL;
-            }}
           />
         </div>
 
