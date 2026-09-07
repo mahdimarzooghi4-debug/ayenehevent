@@ -1,13 +1,14 @@
 interface StatItem {
   value: string;
   label: string;
+  emphasis?: boolean;
 }
 
 const stats: StatItem[] = [
-  { value: '۵+', label: 'محور رویداد' },
-  { value: '۱۵+', label: 'مسئله مشخص' },
-  { value: '۹+', label: 'مرحله در مسیر رویداد' },
-  { value: '۲+', label: 'مسیر ورود' },
+  { value: '۵', label: 'محور رویداد', emphasis: true },
+  { value: '۳۱', label: 'استان مشارکت‌کننده' },
+  { value: '۳۵۰+', label: 'ایده و راهکار ثبت‌شده' },
+  { value: '۱۲۰۰+', label: 'نفر ثبت‌نام‌شده' },
 ];
 
 export function StatsBar() {
@@ -16,15 +17,20 @@ export function StatsBar() {
       {stats.map((stat, index) => (
         <div
           key={stat.label}
-          className={`flex flex-col items-center justify-center gap-2 px-4 py-7
+          className={`flex min-h-[116px] flex-col items-center justify-center gap-2 px-4 py-6 lg:min-h-[142px]
             ${index % 2 === 0 ? 'border-l border-[#E7EAF2] lg:border-l-0' : ''}
             ${index > 1 ? 'border-t border-[#E7EAF2] lg:border-t-0' : ''}
             ${index > 0 ? 'lg:border-r lg:border-[#E7EAF2]' : ''}`}
         >
-          <span className="text-[30px] font-extrabold leading-[1.2] text-[#182B5E] lg:text-[32px]">
+          <span
+            className={`font-extrabold leading-[1.2] text-[#182B5E] ${
+              stat.emphasis ? 'text-[30px] lg:text-[34px]' : 'text-[22px] lg:text-[22px]'
+            }`}
+            style={{ fontFamily: 'Estedad, Vazirmatn, sans-serif' }}
+          >
             {stat.value}
           </span>
-          <span className="text-center text-[14px] font-medium text-[#414C66]">
+          <span className="text-center text-[13px] font-medium text-[#414C66] lg:text-[14px]">
             {stat.label}
           </span>
         </div>
