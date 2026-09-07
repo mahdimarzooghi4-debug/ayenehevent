@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -21,6 +21,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Pin exact Figma hero asset
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p public/images
+
+          if [ ! -s public/images/hero-exact.jpg ]; then
+            curl --fail --location --retry 3 --retry-delay 2 \
+              "https://www.figma.com/api/mcp/asset/5852ac75-f066-4012-8acb-d2b029763eff" \
+              --output public/images/hero-exact.jpg
+
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add public/images/hero-exact.jpg
+            git commit -m "assets: pin exact Figma hero image" || true
+            git push origin HEAD:main
+          fi
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -28,19 +46,6 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-
-      - name: Sync Figma hero image
-        shell: bash
-        run: |
-          mkdir -p public/images
-          if curl --fail --location --retry 3 --retry-delay 2 \
-            "https://cdn.codia.ai/figma/QAnV3aT20HZ7Y2PPnvuBCJ/img-5a1171a7dc1a87fc.png" \
-            --output public/images/hero-figma.png; then
-            echo "Synced the original hero image used by the Figma/Codia section."
-          else
-            echo "Design asset download failed; using the checked-in fallback hero image."
-            cp public/images/hero.webp public/images/hero-figma.png
-          fi
 
       - name: Build
         run: npm run build
