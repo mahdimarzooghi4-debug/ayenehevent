@@ -1,4 +1,5 @@
 const PHOTO_URL = 'https://cdn.codia.ai/figma/QAnV3aT20HZ7Y2PPnvuBCJ/img-5a1171a7dc1a87fc.png';
+const LOCAL_LOGO_URL = './images/ayene-event-logo.webp';
 
 export function Hero() {
   return (
@@ -30,8 +31,30 @@ export function Hero() {
 
       <div className="flex w-full shrink-0 flex-col items-center lg:w-[544px]">
         <div className="relative aspect-[544/317] w-full max-w-[544px] overflow-hidden rounded-[26px] border-[7px] border-[#E0C89F] bg-white shadow-sm">
-          <img src={PHOTO_URL} alt="تیم کاری" className="h-full w-full object-cover" />
+          {/* Local fallback remains visible if the Codia image is unavailable. */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#F9F7F1] px-8 text-center">
+            <img
+              src={LOCAL_LOGO_URL}
+              alt=""
+              aria-hidden="true"
+              className="mb-4 w-[210px] max-w-[70%] object-contain opacity-95"
+            />
+            <p className="text-[16px] font-medium text-[#364E92] sm:text-[18px]">
+              مسئله را ببین<span className="text-[#FB8C74]">؛</span> راهکار را بساز
+            </p>
+          </div>
+
+          <img
+            src={PHOTO_URL}
+            alt="تیم کاری رویداد آینه"
+            className="relative z-10 h-full w-full object-cover"
+            loading="eager"
+            onError={(event) => {
+              event.currentTarget.style.display = 'none';
+            }}
+          />
         </div>
+
         <div className="mt-4 flex w-full max-w-[544px] items-center">
           <div className="h-[2px] flex-1 bg-[#E0C89F]" />
           <div className="mx-3 h-[14px] w-[14px] rotate-45 bg-[#C9A84C]" />
