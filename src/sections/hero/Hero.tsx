@@ -1,4 +1,4 @@
-const PHOTO_URL = '/ayenehevent/images/hero-exact.webp';
+const PHOTO_URL = `${import.meta.env.BASE_URL}images/hero-exact.webp`;
 
 export function Hero() {
   return (
@@ -32,7 +32,7 @@ export function Hero() {
       </div>
 
       <div className="flex w-full shrink-0 flex-col items-center lg:w-[544px]">
-        <div className="relative aspect-[544/317] w-full max-w-[544px] overflow-hidden rounded-[22px] border-[6px] border-[#E0C89F] bg-[#F9F7F1] shadow-[0_12px_28px_rgba(24,43,94,0.08)] sm:rounded-[26px] sm:border-[7px]">
+        <div className="relative aspect-[544/317] w-full max-w-[544px] overflow-hidden rounded-[22px] bg-[#F9F7F1] shadow-[0_12px_28px_rgba(24,43,94,0.08)] sm:rounded-[26px]">
           <img
             src={PHOTO_URL}
             alt="تیم کاری رویداد آینه"
@@ -40,7 +40,7 @@ export function Hero() {
             width={1088}
             height={634}
             loading="eager"
-            decoding="sync"
+            decoding="async"
             fetchPriority="high"
           />
         </div>
