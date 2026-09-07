@@ -13,15 +13,8 @@
   --ayene-bg-inverse: #143278;
 }
 
-* {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-  background: var(--ayene-bg);
-}
-
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: var(--ayene-bg); }
 body {
   margin: 0;
   background: var(--ayene-bg);
@@ -30,23 +23,16 @@ body {
   direction: rtl;
   text-rendering: optimizeLegibility;
 }
+.font-display { font-family: "Estedad", "Vazirmatn", sans-serif; }
+a { color: inherit; text-decoration: none; }
+button, input, textarea, select { font: inherit; }
+::selection { background: rgba(251, 140, 116, 0.28); }
 
-.font-display {
-  font-family: "Estedad", "Vazirmatn", sans-serif;
+.landing-shell {
+  width: min(1240px, calc(100% - 40px));
+  margin-inline: auto;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-button,
-input,
-textarea,
-select {
-  font: inherit;
-}
-
-::selection {
-  background: rgba(251, 140, 116, 0.28);
+@media (min-width: 1024px) {
+  .landing-shell { width: 1240px; }
 }
