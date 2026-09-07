@@ -1,0 +1,47 @@
+name: Visual check
+
+on:
+  push:
+    branches: [feat/landing-page]
+  workflow_dispatch:
+
+jobs:
+  screenshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm install
+      - run: npm install --no-save playwright@1.55.0
+      - run: npx playwright install --with-deps chromium
+      - name: Start app
+        run: |
+          npm run dev > /tmp/ayene-next.log 2>&1 &
+          echo $! > /tmp/ayene-next.pid
+          for i in {1..60}; do
+            if curl -fsS http://127.0.0.1:3000 >/dev/null; then exit 0; fi
+            sleep 2
+          done
+          cat /tmp/ayene-next.log
+          exit 1
+      - name: Capture landing
+        run: |
+          node <<'NODE'
+          const { chromium } = require('playwright');
+          (async () => {
+            const browser = await chromium.launch({headless:true});
+            const page = await browser.newPage({viewport:{width:1440,height:900}, deviceScaleFactor:1});
+            await page.goto('http://127.0.0.1:3000', {waitUntil:'networkidle'});
+            await page.screenshot({path:'landing.png', fullPage:true});
+            console.log(await page.evaluate(() => ({width: document.documentElement.scrollWidth, height: document.documentElement.scrollHeight, dir: document.documentElement.dir, bodyDir: getComputedStyle(document.body).direction})));
+            await browser.close();
+          })();
+          NODE
+      - uses: actions/upload-artifact@v4
+        with:
+          name: landing-visual-check
+          path: landing.png
