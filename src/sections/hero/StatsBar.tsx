@@ -23,10 +23,14 @@ export function StatsBar() {
             ${index > 0 ? 'lg:border-r lg:border-[#E7EAF2]' : ''}`}
         >
           <span
+            dir="ltr"
             className={`font-extrabold leading-[1.2] text-[#182B5E] ${
               stat.emphasis ? 'text-[30px] lg:text-[34px]' : 'text-[22px] lg:text-[22px]'
             }`}
-            style={{ fontFamily: 'Estedad, Vazirmatn, sans-serif' }}
+            style={{
+              fontFamily: 'Estedad, Vazirmatn, sans-serif',
+              unicodeBidi: 'isolate',
+            }}
           >
             {stat.value}
           </span>
