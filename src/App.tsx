@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Header } from './sections/hero/Header';
 import { Hero } from './sections/hero/Hero';
 import { StatsBar } from './sections/hero/StatsBar';
@@ -12,12 +12,8 @@ import { FAQSection } from './sections/FAQSection';
 import { FooterSection } from './sections/FooterSection';
 import { TrackingPage } from './pages/TrackingPage';
 import { ContactPage } from './pages/ContactPage';
-import { AdminPage } from './pages/AdminPage';
-import { AdminSecureDownloads } from './pages/AdminSecureDownloads';
-import { AdminPasswordSettings } from './pages/AdminPasswordSettings';
-import { AdminSitePresentationSettings } from './pages/AdminSitePresentationSettings';
-import { AdminAuditTrail } from './pages/AdminAuditTrail';
-import { AdminDataExports } from './pages/AdminDataExports';
+
+const AdminRoute = lazy(() => import('./pages/AdminRoute'));
 
 const isTrackingHash = () => window.location.hash.startsWith('#tracking');
 const isContactHash = () => window.location.hash.startsWith('#contact');
@@ -58,14 +54,9 @@ export default function App() {
 
   if (adminRoute) {
     return (
-      <>
-        <AdminPage />
-        <AdminSecureDownloads />
-        <AdminSitePresentationSettings />
-        <AdminPasswordSettings />
-        <AdminAuditTrail />
-        <AdminDataExports />
-      </>
+      <Suspense fallback={null}>
+        <AdminRoute />
+      </Suspense>
     );
   }
   if (trackingRoute) return <TrackingPage />;

@@ -1,4 +1,4 @@
-const PHOTO_URL = `${import.meta.env.BASE_URL}images/hero-figma-exact.png`;
+const PHOTO_URL = `${import.meta.env.BASE_URL}images/hero-figma-exact.webp`;
 
 export function Hero() {
   return (
