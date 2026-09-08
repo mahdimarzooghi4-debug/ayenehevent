@@ -55,7 +55,7 @@ export function Header() {
           </a>
 
           <a
-            href="#register"
+            href="#tracking"
             className="hidden h-12 items-center justify-center whitespace-nowrap rounded-full border border-[#364E92] bg-white px-6 text-[15px] font-medium text-[#364E92] transition-colors hover:bg-[#f0f3ff] lg:flex"
           >
             پیگیری ثبت‌نام
@@ -94,7 +94,7 @@ export function Header() {
               پرسش‌های متداول
             </a>
             <a
-              href="#register"
+              href="#tracking"
               onClick={closeMobileMenu}
               className="rounded-[14px] border border-[#364E92] bg-white px-4 py-3 text-center text-[14px] font-medium text-[#364E92]"
             >
