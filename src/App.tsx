@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Header } from './sections/hero/Header';
 import { Hero } from './sections/hero/Hero';
 import { StatsBar } from './sections/hero/StatsBar';
@@ -9,8 +10,27 @@ import { SupportSection } from './sections/support/SupportSection';
 import { RegistrationSection } from './sections/registration/RegistrationSection';
 import { FAQSection } from './sections/FAQSection';
 import { FooterSection } from './sections/FooterSection';
+import { TrackingPage } from './pages/TrackingPage';
+
+const isTrackingHash = () => window.location.hash.startsWith('#tracking');
 
 export default function App() {
+  const [trackingRoute, setTrackingRoute] = useState(isTrackingHash);
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      setTrackingRoute(isTrackingHash());
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  if (trackingRoute) {
+    return <TrackingPage />;
+  }
+
   return (
     <div
       dir="rtl"
