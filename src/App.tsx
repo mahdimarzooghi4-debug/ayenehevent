@@ -30,12 +30,28 @@ export default function App() {
 
   useEffect(() => {
     const handleHashChange = () => {
-      setTrackingRoute(isTrackingHash());
-      setContactRoute(isContactHash());
-      setAdminRoute(isAdminHash());
-      window.scrollTo({ top: 0, behavior: 'auto' });
+      const tracking = isTrackingHash();
+      const contact = isContactHash();
+      const admin = isAdminHash();
+
+      setTrackingRoute(tracking);
+      setContactRoute(contact);
+      setAdminRoute(admin);
+
+      if (tracking || contact || admin) {
+        window.scrollTo({ top: 0, behavior: 'auto' });
+        return;
+      }
+
+      const sectionId = decodeURIComponent(window.location.hash.replace(/^#/, ''));
+      if (!sectionId) return;
+
+      window.requestAnimationFrame(() => {
+        document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
     };
 
+    handleHashChange();
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
