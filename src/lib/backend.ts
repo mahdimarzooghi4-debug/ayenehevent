@@ -33,6 +33,41 @@ export type ContactStatusUpdate = {
   internalNote: string;
 };
 
+export type CmsRegistration = {
+  id: string;
+  tracking_code: string;
+  full_name: string;
+  phone: string;
+  province: string | null;
+  city: string | null;
+  route: string;
+  axis: string;
+  issue: string;
+  experience_solution: string | null;
+  file_path: string | null;
+  form_data: Record<string, unknown>;
+  status: string;
+  admin_message: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type CmsContactRequest = {
+  id: string;
+  request_code: string;
+  full_name: string;
+  phone: string;
+  province: string;
+  city: string;
+  preferred_time: string;
+  subject: string;
+  note: string | null;
+  status: string;
+  internal_note: string;
+  created_at: string;
+  updated_at: string;
+};
+
 export async function signInAdmin(username: string, password: string) {
   const client = requireSupabase();
   const { data, error } = await client.auth.signInWithPassword({
@@ -219,4 +254,99 @@ export async function getRegistrationFileDownloadUrl(path: string, expiresInSeco
 
   if (error) throw error;
   return data.signedUrl;
+}
+
+const CMS_TOKEN_KEY = 'ayene-cms-token';
+const CMS_NAME_KEY = 'ayene-cms-name';
+
+export function getCmsToken() {
+  return sessionStorage.getItem(CMS_TOKEN_KEY) ?? '';
+}
+
+export function getCmsDisplayName() {
+  return sessionStorage.getItem(CMS_NAME_KEY) ?? 'مدیر سامانه';
+}
+
+export async function cmsLogin(username: string, password: string) {
+  const { data, error } = await requireSupabase().rpc('cms_admin_login', {
+    p_username: username,
+    p_password: password,
+  });
+  if (error) throw error;
+  const row = Array.isArray(data) ? data[0] : data;
+  if (!row?.token) throw new Error('ورود به پنل انجام نشد.');
+  sessionStorage.setItem(CMS_TOKEN_KEY, String(row.token));
+  sessionStorage.setItem(CMS_NAME_KEY, String(row.display_name || 'مدیر سامانه'));
+  return row;
+}
+
+export async function cmsSessionValid() {
+  const token = getCmsToken();
+  if (!token) return false;
+  const { data, error } = await requireSupabase().rpc('cms_admin_session_valid', { p_token: token });
+  if (error) return false;
+  return data === true;
+}
+
+export async function cmsLogout() {
+  const token = getCmsToken();
+  if (token) await requireSupabase().rpc('cms_admin_logout', { p_token: token });
+  sessionStorage.removeItem(CMS_TOKEN_KEY);
+  sessionStorage.removeItem(CMS_NAME_KEY);
+}
+
+export async function cmsListRegistrations(): Promise<CmsRegistration[]> {
+  const { data, error } = await requireSupabase().rpc('cms_list_registrations', { p_token: getCmsToken() });
+  if (error) throw error;
+  return (data ?? []) as CmsRegistration[];
+}
+
+export async function cmsListContacts(): Promise<CmsContactRequest[]> {
+  const { data, error } = await requireSupabase().rpc('cms_list_contacts', { p_token: getCmsToken() });
+  if (error) throw error;
+  return (data ?? []) as CmsContactRequest[];
+}
+
+export async function cmsUpdateRegistration(trackingCode: string, status: string, message: string) {
+  const { data, error } = await requireSupabase().rpc('cms_update_registration', {
+    p_token: getCmsToken(),
+    p_tracking_code: trackingCode,
+    p_status: status,
+    p_message: message,
+  });
+  if (error) throw error;
+  return data;
+}
+
+export async function cmsUpdateContact(requestCode: string, status: string, internalNote: string) {
+  const { data, error } = await requireSupabase().rpc('cms_update_contact', {
+    p_token: getCmsToken(),
+    p_request_code: requestCode,
+    p_status: status,
+    p_internal_note: internalNote,
+  });
+  if (error) throw error;
+  return data;
+}
+
+export async function cmsGetSettings() {
+  const { data, error } = await requireSupabase().rpc('cms_get_settings', { p_token: getCmsToken() });
+  if (error) throw error;
+  return (data ?? []) as Array<{ key: string; value: unknown }>;
+}
+
+export async function cmsSavePublicSettings(settings: {
+  registrationEnabled: boolean;
+  trackingEnabled: boolean;
+  adminMessageEnabled: boolean;
+  contactEnabled: boolean;
+}) {
+  const { error } = await requireSupabase().rpc('cms_save_public_settings', {
+    p_token: getCmsToken(),
+    p_registration_enabled: settings.registrationEnabled,
+    p_tracking_enabled: settings.trackingEnabled,
+    p_admin_message_enabled: settings.adminMessageEnabled,
+    p_contact_enabled: settings.contactEnabled,
+  });
+  if (error) throw error;
 }
