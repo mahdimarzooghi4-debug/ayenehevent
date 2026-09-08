@@ -1,4 +1,4 @@
-const PHOTO_URL = `${import.meta.env.BASE_URL}images/hero-exact.jpg`;
+const PHOTO_URL = '/ayenehevent/images/hero-figma-exact.png';
 
 export function Hero() {
   return (

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 
-const LOGO_URL = `${import.meta.env.BASE_URL}images/ayene-event-logo-exact.webp`;
+const LOGO_URL = '/ayenehevent/images/ayene-logo-figma-exact.png';
 
 const navLinks = [
   { label: 'معرفی آینه', href: '#about' },
