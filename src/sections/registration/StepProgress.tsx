@@ -42,8 +42,8 @@ export function StepProgress({ currentStep }: StepProgressProps) {
   };
 
   return (
-    <div dir="rtl" className="w-full px-1 pb-5 pt-2 sm:px-2">
-      <div className="grid grid-cols-3 gap-x-3 gap-y-5 md:hidden">
+    <div dir="rtl" className="w-full pb-5 pt-2">
+      <div className="grid grid-cols-3 gap-x-3 gap-y-5 lg:hidden">
         {steps.map((step, index) => (
           <div key={step.number} className="flex min-w-0 flex-col items-center text-center">
             <div
@@ -62,33 +62,35 @@ export function StepProgress({ currentStep }: StepProgressProps) {
         ))}
       </div>
 
-      <div className="hidden w-full flex-row items-start justify-between md:flex">
-        {steps.map((step, index) => (
-          <div key={step.number} className="flex flex-1 flex-row items-center">
-            <div className="flex min-w-[58px] flex-col items-center">
-              <div
-                className={`flex h-11 w-11 items-center justify-center rounded-full border-[1.5px] text-[14px] font-medium ${getCircleClass(index)}`}
-                style={{ fontFamily: 'Vazirmatn, sans-serif' }}
-              >
-                {step.number}
+      <div className="relative mx-auto hidden h-[82px] w-full max-w-[1144px] lg:block">
+        <div className="flex w-full items-start px-[60px]">
+          {steps.map((step, index) => (
+            <div key={step.number} className="contents">
+              <div className="relative h-[82px] w-11 shrink-0">
+                <div
+                  className={`flex h-11 w-11 items-center justify-center rounded-full border-[1.5px] text-[14px] font-medium ${getCircleClass(index)}`}
+                  style={{ fontFamily: 'Vazirmatn, sans-serif' }}
+                >
+                  {step.number}
+                </div>
+                <span
+                  className={`absolute left-1/2 top-[50px] w-[164px] -translate-x-1/2 whitespace-nowrap text-center text-[13px] leading-8 ${getLabelClass(index)}`}
+                  style={{ fontFamily: 'Vazirmatn, sans-serif' }}
+                >
+                  {step.label}
+                </span>
               </div>
-              <span
-                className={`mt-2 whitespace-nowrap text-center text-[13px] leading-tight ${getLabelClass(index)}`}
-                style={{ fontFamily: 'Vazirmatn, sans-serif' }}
-              >
-                {step.label}
-              </span>
-            </div>
 
-            {index < steps.length - 1 && (
-              <div
-                className={`mx-2 mb-[22px] h-[2px] flex-1 ${
-                  index + 1 < currentStep ? 'bg-[#364E92]' : 'bg-[#E0C89F]'
-                }`}
-              />
-            )}
-          </div>
-        ))}
+              {index < steps.length - 1 && (
+                <div
+                  className={`mt-[21px] h-[2px] flex-1 ${
+                    index + 1 < currentStep ? 'bg-[#364E92]' : 'bg-[#E0C89F]'
+                  }`}
+                />
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
