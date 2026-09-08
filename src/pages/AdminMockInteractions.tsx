@@ -150,6 +150,22 @@ function restoreSettings() {
   }
 }
 
+function addInfoRow(container: HTMLElement, label: string, value: string) {
+  const row = document.createElement('div');
+  Object.assign(row.style, { padding: '10px 0', borderBottom: '1px solid #E7EAF2' });
+
+  const labelNode = document.createElement('div');
+  labelNode.textContent = label;
+  Object.assign(labelNode.style, { fontSize: '12px', color: '#6B7280' });
+
+  const valueNode = document.createElement('div');
+  valueNode.textContent = value;
+  Object.assign(valueNode.style, { marginTop: '4px', fontSize: '14px', color: '#182B5E', fontWeight: '500' });
+
+  row.append(labelNode, valueNode);
+  container.appendChild(row);
+}
+
 function openInfoDialog() {
   document.getElementById('ayene-admin-info-dialog')?.remove();
 
@@ -199,21 +215,24 @@ function openInfoDialog() {
   Object.assign(title.style, { fontSize: '20px', fontWeight: '700', margin: '0 0 18px' });
 
   const body = document.createElement('div');
-  const rows = Array.from(infoSection.querySelectorAll('div > div')).filter((node) => node.querySelectorAll(':scope > p').length >= 2);
-  if (rows.length) {
-    body.innerHTML = rows
-      .map((node) => {
-        const paragraphs = node.querySelectorAll(':scope > p');
-        const label = paragraphs[0]?.textContent?.trim() ?? '';
-        const value = paragraphs[1]?.textContent?.trim() ?? '';
-        return `<div style="padding:10px 0;border-bottom:1px solid #E7EAF2"><div style="font-size:12px;color:#6B7280">${label}</div><div style="margin-top:4px;font-size:14px;color:#182B5E;font-weight:500">${value}</div></div>`;
-      })
-      .join('');
+  Object.assign(body.style, { fontSize: '14px', lineHeight: '2', color: '#334061' });
+
+  const candidates = Array.from(infoSection.querySelectorAll('div')).filter((node) => {
+    const directParagraphs = Array.from(node.children).filter((child) => child.tagName === 'P');
+    return directParagraphs.length >= 2;
+  });
+
+  if (candidates.length) {
+    for (const node of candidates) {
+      const paragraphs = Array.from(node.children).filter((child) => child.tagName === 'P') as HTMLParagraphElement[];
+      const label = normalizeLabel(paragraphs[0]?.textContent);
+      const value = normalizeLabel(paragraphs[1]?.textContent);
+      if (label && value) addInfoRow(body, label, value);
+    }
   } else {
     body.textContent = infoSection.innerText;
     body.style.whiteSpace = 'pre-line';
   }
-  Object.assign(body.style, { fontSize: '14px', lineHeight: '2', color: '#334061' });
 
   const close = document.createElement('button');
   close.type = 'button';
@@ -245,8 +264,7 @@ function bindButtons() {
 
   for (const button of buttons) {
     const label = normalizeLabel(button.textContent);
-    const bindingKey = `ayeneBound${label}`;
-    if (button.dataset[bindingKey]) continue;
+    if (button.dataset.ayeneAdminBound === label) continue;
 
     if (label === 'ذخیره پیش‌نویس') {
       button.addEventListener('click', () => saveDraft(button));
@@ -260,7 +278,7 @@ function bindButtons() {
       continue;
     }
 
-    button.dataset[bindingKey] = '1';
+    button.dataset.ayeneAdminBound = label;
   }
 }
 
