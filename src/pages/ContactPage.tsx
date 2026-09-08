@@ -1,10 +1,28 @@
 import { FormEvent, useState } from 'react';
+import { submitContactRequest } from '../lib/backend';
 
 const LOGO_URL = '/ayenehevent/images/ayene-logo-figma-exact.png';
-const REQUEST_CODE = 'تماس-۰۱۲۸';
 
 const fieldClass =
   'h-[54px] w-full rounded-[14px] border-[1.2px] border-[#E0C89F] bg-white px-4 text-right text-[15px] font-normal text-[#334061] outline-none transition focus:border-[#364E92]';
+
+const subjectLabels: Record<string, string> = {
+  registration: 'ثبت‌نام',
+  issues: 'نظام مسائل',
+  tracking: 'پیگیری',
+  other: 'سایر',
+};
+
+function splitLocation(value: string) {
+  const parts = value
+    .split(/[،,]/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+
+  const province = parts[0] ?? '';
+  const city = parts.slice(1).join('، ') || province;
+  return { province, city };
+}
 
 function ContactStepsCard() {
   const steps = [
@@ -46,13 +64,42 @@ function ContactStepsCard() {
   );
 }
 
-function ContactForm({ onSuccess }: { onSuccess: () => void }) {
+function ContactForm({ onSuccess }: { onSuccess: (requestCode: string) => void }) {
   const [consent, setConsent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!consent) return;
-    onSuccess();
+    if (!consent || submitting) return;
+
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    const fullName = String(data.get('fullName') ?? '').trim();
+    const phone = String(data.get('phone') ?? '').trim();
+    const location = String(data.get('location') ?? '').trim();
+    const preferredTime = String(data.get('preferredTime') ?? '').trim();
+    const subjectValue = String(data.get('subject') ?? '').trim();
+    const note = String(data.get('note') ?? '').trim();
+    const { province, city } = splitLocation(location);
+
+    setSubmitting(true);
+    try {
+      const requestCode = await submitContactRequest({
+        fullName,
+        phone,
+        province,
+        city,
+        preferredTime,
+        subject: subjectLabels[subjectValue] ?? subjectValue,
+        note,
+      });
+      onSuccess(requestCode);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'ثبت درخواست تماس ممکن نشد. دوباره تلاش کن.';
+      window.alert(message);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -77,27 +124,27 @@ function ContactForm({ onSuccess }: { onSuccess: () => void }) {
       <div className="mt-7 grid grid-cols-1 gap-x-10 gap-y-4 md:grid-cols-2">
         <label className="text-right">
           <span className="mb-1 block text-[13px] font-medium text-[#334061]">نام و نام خانوادگی</span>
-          <input className={fieldClass} type="text" placeholder="مثلاً مریم احمدی" required />
+          <input className={fieldClass} name="fullName" type="text" placeholder="مثلاً مریم احمدی" required />
         </label>
 
         <label className="text-right">
           <span className="mb-1 block text-[13px] font-medium text-[#334061]">شماره تماس</span>
-          <input className={fieldClass} type="tel" inputMode="tel" placeholder="۰۹۱۲۱۲۳۴۵۶۷" required />
+          <input className={fieldClass} name="phone" type="tel" inputMode="tel" placeholder="۰۹۱۲۱۲۳۴۵۶۷" required />
         </label>
 
         <label className="text-right">
           <span className="mb-1 block text-[13px] font-medium text-[#334061]">استان و شهر</span>
-          <input className={fieldClass} type="text" placeholder="مثلاً تهران، تهران" required />
+          <input className={fieldClass} name="location" type="text" placeholder="مثلاً تهران، تهران" required />
         </label>
 
         <label className="text-right">
           <span className="mb-1 block text-[13px] font-medium text-[#334061]">زمان مناسب تماس</span>
-          <input className={fieldClass} type="text" placeholder="مثلاً ۹ تا ۱۲" required />
+          <input className={fieldClass} name="preferredTime" type="text" placeholder="مثلاً ۹ تا ۱۲" required />
         </label>
 
         <label className="text-right">
           <span className="mb-1 block text-[13px] font-medium text-[#334061]">موضوع تماس</span>
-          <select className={fieldClass} defaultValue="" required>
+          <select className={fieldClass} name="subject" defaultValue="" required>
             <option value="" disabled>
               ثبت‌نام / نظام مسائل / پیگیری / سایر
             </option>
@@ -110,7 +157,7 @@ function ContactForm({ onSuccess }: { onSuccess: () => void }) {
 
         <label className="text-right">
           <span className="mb-1 block text-[13px] font-medium text-[#334061]">توضیح کوتاه (اختیاری)</span>
-          <input className={fieldClass} type="text" placeholder="موضوع یا سؤال را کوتاه بنویس" />
+          <input className={fieldClass} name="note" type="text" placeholder="موضوع یا سؤال را کوتاه بنویس" />
         </label>
       </div>
 
@@ -129,19 +176,19 @@ function ContactForm({ onSuccess }: { onSuccess: () => void }) {
       <div className="mt-4 flex justify-start">
         <button
           type="submit"
-          disabled={!consent}
+          disabled={!consent || submitting}
           className={`flex h-[54px] w-full items-center justify-center rounded-[16px] text-[16px] font-medium text-white transition sm:w-[240px] ${
-            consent ? 'cursor-pointer bg-[#FB8C74] hover:bg-[#f97d62]' : 'cursor-not-allowed bg-[#D9A99E]'
+            consent && !submitting ? 'cursor-pointer bg-[#FB8C74] hover:bg-[#f97d62]' : 'cursor-not-allowed bg-[#D9A99E]'
           }`}
         >
-          ثبت درخواست تماس
+          {submitting ? 'در حال ثبت...' : 'ثبت درخواست تماس'}
         </button>
       </div>
     </form>
   );
 }
 
-function ContactSuccess() {
+function ContactSuccess({ requestCode }: { requestCode: string }) {
   return (
     <div className="flex min-h-[430px] w-full flex-col items-start justify-center rounded-[26px] border-[1.4px] border-[#E0C89F] bg-white px-6 py-8 text-right sm:px-10 lg:w-[820px] lg:px-10">
       <div className="flex h-[92px] w-[92px] items-center justify-center rounded-full bg-[#EDF7F0] text-[42px] font-medium text-[#2B7347]">
@@ -160,7 +207,7 @@ function ContactSuccess() {
       </p>
 
       <div className="mt-6 flex h-[58px] w-full max-w-[540px] items-center rounded-[14px] bg-[#F6F8FC] px-5 text-[14px] font-medium text-[#364E92]">
-        کد درخواست: {REQUEST_CODE}
+        کد درخواست: {requestCode}
       </div>
 
       <a
@@ -174,7 +221,7 @@ function ContactSuccess() {
 }
 
 export function ContactPage() {
-  const [submitted, setSubmitted] = useState(false);
+  const [requestCode, setRequestCode] = useState<string | null>(null);
 
   return (
     <div
@@ -220,7 +267,7 @@ export function ContactPage() {
         </p>
 
         <div className="mt-4 flex flex-col gap-10 lg:flex-row">
-          {submitted ? <ContactSuccess /> : <ContactForm onSuccess={() => setSubmitted(true)} />}
+          {requestCode ? <ContactSuccess requestCode={requestCode} /> : <ContactForm onSuccess={setRequestCode} />}
           <ContactStepsCard />
         </div>
 
