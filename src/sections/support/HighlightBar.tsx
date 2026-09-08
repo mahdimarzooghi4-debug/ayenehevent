@@ -26,19 +26,6 @@ export function HighlightBar() {
           پروژه‌های منتخب پس از ارزیابی می‌توانند وارد مرحله حمایت و اجرای پایلوت شوند.
         </h3>
       </div>
-
-      <div className="text-right" style={{ maxWidth: '420px' }}>
-        <p
-          className="text-[15px] font-normal"
-          style={{
-            fontFamily: "'Vazirmatn', sans-serif",
-            color: '#DFE6F6',
-            lineHeight: '23.44px',
-          }}
-        >
-          ثبت‌نام یا راه‌یابی به مراحل میانی، به‌معنای دریافت حمایت مالی قطعی نیست.
-        </p>
-      </div>
     </div>
   );
 }
