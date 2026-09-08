@@ -16,6 +16,7 @@ import { AdminPage } from './pages/AdminPage';
 import { AdminSecureDownloads } from './pages/AdminSecureDownloads';
 import { AdminPasswordSettings } from './pages/AdminPasswordSettings';
 import { AdminAuditTrail } from './pages/AdminAuditTrail';
+import { AdminDataExports } from './pages/AdminDataExports';
 
 const isTrackingHash = () => window.location.hash.startsWith('#tracking');
 const isContactHash = () => window.location.hash.startsWith('#contact');
@@ -45,6 +46,7 @@ export default function App() {
         <AdminSecureDownloads />
         <AdminPasswordSettings />
         <AdminAuditTrail />
+        <AdminDataExports />
       </>
     );
   }
