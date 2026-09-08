@@ -44,6 +44,12 @@ const fieldClass =
   'h-12 w-full rounded-[14px] border-[1.2px] border-[#E0C89F] bg-white px-4 text-right text-[15px] font-normal text-[#334061] outline-none transition focus:border-[#364E92]';
 
 const TRACKING_CODE = 'AY-1405-00128';
+const TRACKING_STORAGE_KEY = 'ayene-registration-demo-record';
+
+const normalizeDigits = (value: string) =>
+  value
+    .replace(/[۰-۹]/g, (digit) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)))
+    .replace(/[٠-٩]/g, (digit) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(digit)));
 
 interface FieldLabelProps {
   label: string;
@@ -90,6 +96,7 @@ export function FormPanel() {
   const [selectedAxis, setSelectedAxis] = useState(axes[0].title);
   const [selectedIssue, setSelectedIssue] = useState(axes[0].issues[0]);
   const [fileName, setFileName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [trackingCopied, setTrackingCopied] = useState(false);
 
@@ -125,6 +132,23 @@ export function FormPanel() {
   };
 
   const handleSubmit = () => {
+    const normalizedPhone = normalizeDigits(phoneNumber).replace(/\D/g, '');
+    const phoneLast4 = normalizedPhone.slice(-4) || '4567';
+
+    try {
+      window.localStorage.setItem(
+        TRACKING_STORAGE_KEY,
+        JSON.stringify({
+          trackingCode: TRACKING_CODE,
+          phoneLast4,
+          status: 'در حال بررسی',
+          message: 'پرونده دریافت شده و در مرحله بررسی اولیه است. نتیجه بعدی از همین بخش اعلام می‌شود.',
+        }),
+      );
+    } catch {
+      // The demo tracking flow still works with the Figma sample record if storage is unavailable.
+    }
+
     setSubmitted(true);
     setTrackingCopied(false);
     scrollPanelToTop();
@@ -138,6 +162,10 @@ export function FormPanel() {
     } catch {
       setTrackingCopied(false);
     }
+  };
+
+  const handleOpenTracking = () => {
+    window.location.hash = `tracking?code=${encodeURIComponent(TRACKING_CODE)}`;
   };
 
   const renderStep = () => {
@@ -155,7 +183,14 @@ export function FormPanel() {
 
           <div className="mb-5 grid grid-cols-1 gap-4 md:grid-cols-2">
             <FieldLabel label="شماره تماس / راه ارتباطی">
-              <input className={fieldClass} type="tel" inputMode="tel" placeholder="۰۹۱۲۱۲۳۴۵۶۷" />
+              <input
+                className={fieldClass}
+                type="tel"
+                inputMode="tel"
+                value={phoneNumber}
+                onChange={(event) => setPhoneNumber(event.target.value)}
+                placeholder="۰۹۱۲۱۲۳۴۵۶۷"
+              />
             </FieldLabel>
             <FieldLabel label="نحوه حضور">
               <select className={fieldClass} defaultValue="فرد">
@@ -356,8 +391,8 @@ export function FormPanel() {
 
       <button
         type="button"
+        onClick={handleOpenTracking}
         className="mt-1 flex h-[44px] w-full max-w-[220px] items-center justify-center rounded-[14px] border-[1.4px] border-[#364E92] bg-white text-[14px] font-medium text-[#364E92]"
-        title="پس از اتصال بک‌اند، وضعیت پرونده از این بخش قابل پیگیری خواهد بود"
       >
         پیگیری وضعیت ثبت‌نام
       </button>
