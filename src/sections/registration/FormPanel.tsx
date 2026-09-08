@@ -33,7 +33,10 @@ const stepMeta = [
   { title: '۲. انتخاب مسیر', description: 'مسیر مناسب ورودت به رویداد را انتخاب کن' },
   { title: '۳. محور و مسئله', description: 'محور رویداد و مسئله موردنظرت را مشخص کن' },
   { title: '۴. تجربه / راهکار', description: 'توضیحات اصلی درباره تجربه یا راهکارت را ثبت کن' },
-  { title: '۵. فایل تکمیلی', description: 'در صورت نیاز فایل یا توضیح تکمیلی اضافه کن' },
+  {
+    title: '۵. فایل تکمیلی',
+    description: 'فایل نمونه را دانلود کن، تکمیل کن و نسخه تکمیل‌شده را بارگذاری کن',
+  },
   { title: '۶. تأیید و ارسال', description: 'اطلاعات را مرور کن و برای ارسال نهایی آماده شو' },
 ];
 
@@ -89,6 +92,7 @@ export function FormPanel() {
 
   const activeAxis = axes.find((axis) => axis.title === selectedAxis) ?? axes[0];
   const currentMeta = stepMeta[currentStep - 1];
+  const canContinue = currentStep !== 5 || Boolean(fileName);
 
   const moveToStep = (step: number) => {
     setCurrentStep(step);
@@ -99,7 +103,7 @@ export function FormPanel() {
   };
 
   const handleNext = () => {
-    if (currentStep < 6) moveToStep(currentStep + 1);
+    if (currentStep < 6 && canContinue) moveToStep(currentStep + 1);
   };
 
   const handleBack = () => {
@@ -227,25 +231,50 @@ export function FormPanel() {
     if (currentStep === 5) {
       return (
         <div className="space-y-5">
-          <FieldLabel label="فایل تکمیلی (اختیاری)">
-            <div className="flex min-h-[92px] flex-col items-center justify-center gap-3 rounded-[16px] border border-dashed border-[#E0C89F] bg-[#FBFAF7] px-5 py-5 text-center">
+          <div className="rounded-[18px] border border-[#D6DEF0] bg-[#F6F8FD] p-5 text-right">
+            <p className="text-[16px] font-medium text-[#182B5E]">فایل نمونه ثبت‌نام را تکمیل کن</p>
+            <p className="mt-2 text-[14px] leading-7 text-[#616B80]">
+              ابتدا فایل نمونه را دانلود کن، اطلاعات خواسته‌شده را در Word تکمیل کن و سپس نسخه تکمیل‌شده را در همین مرحله بارگذاری کن.
+            </p>
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <a
+                href="./files/ayene-registration-template.rtf"
+                download="فرم-تکمیلی-رویداد-آینه.rtf"
+                className="inline-flex h-[44px] items-center justify-center rounded-[14px] bg-[#364E92] px-5 text-[14px] font-medium text-white transition-colors hover:bg-[#2f447f]"
+              >
+                دانلود فایل نمونه
+              </a>
+              <span className="text-[13px] leading-6 text-[#616B80]">فرمت قابل ویرایش در Microsoft Word</span>
+            </div>
+          </div>
+
+          <FieldLabel label="فایل تکمیل‌شده">
+            <div className="flex min-h-[110px] flex-col items-center justify-center gap-3 rounded-[16px] border border-dashed border-[#E0C89F] bg-[#FBFAF7] px-5 py-5 text-center">
               <input
                 id="registration-file"
                 type="file"
+                accept=".rtf,.doc,.docx"
                 className="hidden"
                 onChange={(event) => setFileName(event.target.files?.[0]?.name ?? '')}
               />
               <label
                 htmlFor="registration-file"
-                className="cursor-pointer rounded-[14px] border border-[#364E92] bg-white px-5 py-2 text-[14px] font-medium text-[#364E92]"
+                className="cursor-pointer rounded-[14px] border border-[#364E92] bg-white px-5 py-2 text-[14px] font-medium text-[#364E92] transition-colors hover:bg-[#F6F8FD]"
               >
-                انتخاب فایل
+                انتخاب فایل تکمیل‌شده
               </label>
-              <span className="text-[13px] text-[#616B80]">
-                {fileName || 'در صورت نیاز فایل معرفی، رزومه یا مستند تکمیلی را انتخاب کنید'}
+              <span className={`text-[13px] ${fileName ? 'font-medium text-[#364E92]' : 'text-[#616B80]'}`}>
+                {fileName || 'فایل RTF یا Word تکمیل‌شده را انتخاب کنید'}
               </span>
             </div>
           </FieldLabel>
+
+          {!fileName && (
+            <p className="text-right text-[13px] leading-6 text-[#FB8C74]">
+              برای رفتن به مرحله بعد، فایل تکمیل‌شده را انتخاب کنید.
+            </p>
+          )}
+
           <FieldLabel label="توضیحات تکمیلی (اختیاری)">
             <textarea
               className="min-h-[100px] w-full resize-y rounded-[14px] border-[1.2px] border-[#E0C89F] bg-white px-4 py-3 text-right text-[15px] leading-7 text-[#334061] outline-none focus:border-[#364E92]"
@@ -273,6 +302,10 @@ export function FormPanel() {
             <div className="md:col-span-2">
               <p className="text-[12px] text-[#616B80]">مسئله منتخب</p>
               <p className="mt-1 text-[15px] font-medium leading-7 text-[#182B5E]">{selectedIssue}</p>
+            </div>
+            <div className="md:col-span-2">
+              <p className="text-[12px] text-[#616B80]">فایل تکمیل‌شده</p>
+              <p className="mt-1 text-[15px] font-medium text-[#182B5E]">{fileName || 'انتخاب نشده'}</p>
             </div>
           </div>
         </div>
@@ -348,9 +381,14 @@ export function FormPanel() {
 
         {currentStep < 6 ? (
           <button
-            className="flex h-[46px] w-full cursor-pointer items-center justify-center rounded-[16px] border-0 bg-[#FB8C74] text-[16px] font-medium text-white transition-colors hover:bg-[#f97d62] sm:w-[220px]"
+            className={`flex h-[46px] w-full items-center justify-center rounded-[16px] border-0 text-[16px] font-medium text-white transition-colors sm:w-[220px] ${
+              canContinue
+                ? 'cursor-pointer bg-[#FB8C74] hover:bg-[#f97d62]'
+                : 'cursor-not-allowed bg-[#D9A99E] opacity-70'
+            }`}
             type="button"
             onClick={handleNext}
+            disabled={!canContinue}
           >
             ادامه
           </button>
