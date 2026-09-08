@@ -3,7 +3,7 @@ import { JourneyGrid } from './JourneyGrid';
 export function JourneySection() {
   return (
     <section id="journey" dir="rtl" className="bg-[#F6F8FD] py-16">
-      <div className="mx-auto max-w-[1240px] px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-[1440px] px-6 lg:px-[100px]">
         <header className="mb-12 text-right">
           <p className="mb-2 text-[15px] font-medium text-[#FB8C74]">مسیر رویداد</p>
           <h2 className="mb-2 text-[36px] font-extrabold leading-[1.75] text-[#182B5E] lg:text-[42px]" style={{ fontFamily: 'Estedad, Vazirmatn, sans-serif' }}>
