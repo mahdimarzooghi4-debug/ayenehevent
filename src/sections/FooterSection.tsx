@@ -77,7 +77,7 @@ export function FooterSection() {
                 <img
                   src="./images/committee-logo.webp"
                   alt="کمیته امداد امام خمینی"
-                  className="h-[99px] w-[133px] max-w-full object-contain"
+                  className="h-[99px] w-[133px] max-w-full object-contain mix-blend-multiply"
                   width={133}
                   height={99}
                 />
@@ -87,7 +87,7 @@ export function FooterSection() {
                 <img
                   src="./images/creative-house-logo.webp"
                   alt="خانه خلاق و نوآوری آینه"
-                  className="h-[96px] w-[128px] max-w-full object-contain"
+                  className="h-[96px] w-[128px] max-w-full object-contain mix-blend-multiply"
                   width={128}
                   height={96}
                 />
