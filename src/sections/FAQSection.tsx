@@ -46,10 +46,10 @@ export function FAQSection() {
     <section
       id="faq"
       dir="rtl"
-      className="w-full bg-[#FAF9F7] px-6 py-[58px] lg:px-[100px]"
+      className="w-full bg-[#FAF9F7] py-[58px]"
       style={{ direction: 'rtl', fontFamily: "'Vazirmatn', sans-serif" }}
     >
-      <div className="mx-auto max-w-[1440px]">
+      <div className="mx-auto w-full max-w-[1440px] px-6 lg:px-[100px]">
         <div className="mb-10 w-full text-right">
           <p className="mb-2 text-[15px] font-medium leading-[23.44px] text-[#364E92]">
             پرسش‌های متداول
