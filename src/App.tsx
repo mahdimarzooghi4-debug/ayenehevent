@@ -13,7 +13,6 @@ import { FooterSection } from './sections/FooterSection';
 import { TrackingPage } from './pages/TrackingPage';
 import { ContactPage } from './pages/ContactPage';
 import { AdminPage } from './pages/AdminPage';
-import { AdminMockInteractions } from './pages/AdminMockInteractions';
 
 const isTrackingHash = () => window.location.hash.startsWith('#tracking');
 const isContactHash = () => window.location.hash.startsWith('#contact');
@@ -36,22 +35,9 @@ export default function App() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  if (adminRoute) {
-    return (
-      <>
-        <AdminPage />
-        <AdminMockInteractions />
-      </>
-    );
-  }
-
-  if (trackingRoute) {
-    return <TrackingPage />;
-  }
-
-  if (contactRoute) {
-    return <ContactPage />;
-  }
+  if (adminRoute) return <AdminPage />;
+  if (trackingRoute) return <TrackingPage />;
+  if (contactRoute) return <ContactPage />;
 
   return (
     <div
