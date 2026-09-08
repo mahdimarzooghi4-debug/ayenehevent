@@ -11,15 +11,19 @@ import { RegistrationSection } from './sections/registration/RegistrationSection
 import { FAQSection } from './sections/FAQSection';
 import { FooterSection } from './sections/FooterSection';
 import { TrackingPage } from './pages/TrackingPage';
+import { ContactPage } from './pages/ContactPage';
 
 const isTrackingHash = () => window.location.hash.startsWith('#tracking');
+const isContactHash = () => window.location.hash.startsWith('#contact');
 
 export default function App() {
   const [trackingRoute, setTrackingRoute] = useState(isTrackingHash);
+  const [contactRoute, setContactRoute] = useState(isContactHash);
 
   useEffect(() => {
     const handleHashChange = () => {
       setTrackingRoute(isTrackingHash());
+      setContactRoute(isContactHash());
       window.scrollTo({ top: 0, behavior: 'auto' });
     };
 
@@ -29,6 +33,10 @@ export default function App() {
 
   if (trackingRoute) {
     return <TrackingPage />;
+  }
+
+  if (contactRoute) {
+    return <ContactPage />;
   }
 
   return (
