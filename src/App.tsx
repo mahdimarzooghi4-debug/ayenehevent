@@ -19,6 +19,10 @@ const isTrackingHash = () => window.location.hash.startsWith('#tracking');
 const isContactHash = () => window.location.hash.startsWith('#contact');
 const isAdminHash = () => window.location.hash.startsWith('#admin');
 
+if ('scrollRestoration' in window.history) {
+  window.history.scrollRestoration = 'manual';
+}
+
 export default function App() {
   const [trackingRoute, setTrackingRoute] = useState(isTrackingHash);
   const [contactRoute, setContactRoute] = useState(isContactHash);
@@ -40,7 +44,10 @@ export default function App() {
       }
 
       const sectionId = decodeURIComponent(window.location.hash.replace(/^#/, ''));
-      if (!sectionId) return;
+      if (!sectionId) {
+        window.scrollTo({ top: 0, behavior: 'auto' });
+        return;
+      }
 
       window.requestAnimationFrame(() => {
         document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
