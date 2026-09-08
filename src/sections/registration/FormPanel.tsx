@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { submitRegistration } from '../../lib/backend';
 import { StepProgress } from './StepProgress';
 
 const axes = [
@@ -43,13 +44,21 @@ const stepMeta = [
 const fieldClass =
   'h-12 w-full rounded-[14px] border-[1.2px] border-[#E0C89F] bg-white px-4 text-right text-[15px] font-normal text-[#334061] outline-none transition focus:border-[#364E92]';
 
-const TRACKING_CODE = 'AY-1405-00128';
-const TRACKING_STORAGE_KEY = 'ayene-registration-demo-record';
-
 const normalizeDigits = (value: string) =>
   value
     .replace(/[۰-۹]/g, (digit) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)))
     .replace(/[٠-٩]/g, (digit) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(digit)));
+
+function splitLocation(value: string) {
+  const parts = value
+    .split(/[،,]/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+  return {
+    province: parts[0] ?? '',
+    city: parts.slice(1).join('، ') || parts[0] || '',
+  };
+}
 
 interface FieldLabelProps {
   label: string;
@@ -96,8 +105,19 @@ export function FormPanel() {
   const [selectedAxis, setSelectedAxis] = useState(axes[0].title);
   const [selectedIssue, setSelectedIssue] = useState(axes[0].issues[0]);
   const [fileName, setFileName] = useState('');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [fullName, setFullName] = useState('');
+  const [location, setLocation] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [attendance, setAttendance] = useState('فرد');
+  const [teamMembers, setTeamMembers] = useState('');
+  const [experienceTitle, setExperienceTitle] = useState('');
+  const [experienceDescription, setExperienceDescription] = useState('');
+  const [extraNotes, setExtraNotes] = useState('');
+  const [confirmed, setConfirmed] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [trackingCode, setTrackingCode] = useState('');
   const [trackingCopied, setTrackingCopied] = useState(false);
 
   const activeAxis = axes.find((axis) => axis.title === selectedAxis) ?? axes[0];
@@ -131,32 +151,68 @@ export function FormPanel() {
     setSelectedIssue(nextAxis.issues[0]);
   };
 
-  const handleSubmit = () => {
-    const normalizedPhone = normalizeDigits(phoneNumber).replace(/\D/g, '');
-    const phoneLast4 = normalizedPhone.slice(-4) || '4567';
-
-    try {
-      window.localStorage.setItem(
-        TRACKING_STORAGE_KEY,
-        JSON.stringify({
-          trackingCode: TRACKING_CODE,
-          phoneLast4,
-          status: 'در حال بررسی',
-          message: 'پرونده دریافت شده و در مرحله بررسی اولیه است. نتیجه بعدی از همین بخش اعلام می‌شود.',
-        }),
-      );
-    } catch {
-      // The demo tracking flow still works with the Figma sample record if storage is unavailable.
+  const handleSubmit = async () => {
+    if (submitting) return;
+    if (!confirmed) {
+      window.alert('برای ارسال نهایی، تأیید بررسی اطلاعات را انتخاب کن.');
+      return;
     }
 
-    setSubmitted(true);
-    setTrackingCopied(false);
-    scrollPanelToTop();
+    const normalizedPhone = normalizeDigits(phoneNumber).replace(/\D/g, '');
+    if (fullName.trim().length < 2) {
+      window.alert('نام و نام خانوادگی را کامل وارد کن.');
+      return;
+    }
+    if (!/^09\d{9}$/.test(normalizedPhone)) {
+      window.alert('شماره تماس معتبر وارد کن.');
+      return;
+    }
+    if (!selectedFile) {
+      window.alert('فایل تکمیل‌شده را انتخاب کن.');
+      return;
+    }
+
+    const { province, city } = splitLocation(location);
+    const routeLabel = route === 'solution' ? 'ایده یا راهکار دارم' : 'تجربه و تخصص دارم';
+    const experienceSolution = [experienceTitle.trim(), experienceDescription.trim()].filter(Boolean).join('\n\n');
+
+    setSubmitting(true);
+    try {
+      const code = await submitRegistration({
+        fullName: fullName.trim(),
+        phone: normalizedPhone,
+        province,
+        city,
+        route: routeLabel,
+        axis: selectedAxis,
+        issue: selectedIssue,
+        experienceSolution,
+        file: selectedFile,
+        formData: {
+          attendance,
+          teamMembers: teamMembers.trim(),
+          experienceTitle: experienceTitle.trim(),
+          experienceDescription: experienceDescription.trim(),
+          extraNotes: extraNotes.trim(),
+        },
+      });
+
+      setTrackingCode(code);
+      setSubmitted(true);
+      setTrackingCopied(false);
+      scrollPanelToTop();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'ارسال ثبت‌نام ممکن نشد. دوباره تلاش کن.';
+      window.alert(message);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleCopyTrackingCode = async () => {
+    if (!trackingCode) return;
     try {
-      await navigator.clipboard.writeText(TRACKING_CODE);
+      await navigator.clipboard.writeText(trackingCode);
       setTrackingCopied(true);
       window.setTimeout(() => setTrackingCopied(false), 1800);
     } catch {
@@ -165,7 +221,8 @@ export function FormPanel() {
   };
 
   const handleOpenTracking = () => {
-    window.location.hash = `tracking?code=${encodeURIComponent(TRACKING_CODE)}`;
+    if (!trackingCode) return;
+    window.location.hash = `tracking?code=${encodeURIComponent(trackingCode)}`;
   };
 
   const renderStep = () => {
@@ -174,10 +231,22 @@ export function FormPanel() {
         <>
           <div className="mb-5 grid grid-cols-1 gap-4 md:grid-cols-2">
             <FieldLabel label="نام و نام خانوادگی">
-              <input className={fieldClass} type="text" placeholder="نام و نام خانوادگی" />
+              <input
+                className={fieldClass}
+                type="text"
+                value={fullName}
+                onChange={(event) => setFullName(event.target.value)}
+                placeholder="نام و نام خانوادگی"
+              />
             </FieldLabel>
             <FieldLabel label="استان و شهر">
-              <input className={fieldClass} type="text" placeholder="مثلاً تهران، تهران" />
+              <input
+                className={fieldClass}
+                type="text"
+                value={location}
+                onChange={(event) => setLocation(event.target.value)}
+                placeholder="مثلاً تهران، تهران"
+              />
             </FieldLabel>
           </div>
 
@@ -193,7 +262,7 @@ export function FormPanel() {
               />
             </FieldLabel>
             <FieldLabel label="نحوه حضور">
-              <select className={fieldClass} defaultValue="فرد">
+              <select className={fieldClass} value={attendance} onChange={(event) => setAttendance(event.target.value)}>
                 <option>فرد</option>
                 <option>تیم</option>
                 <option>مجموعه</option>
@@ -204,6 +273,8 @@ export function FormPanel() {
           <FieldLabel label="اطلاعات اعضا (در صورت تیم یا مجموعه)">
             <textarea
               className="min-h-[92px] w-full resize-y rounded-[14px] border-[1.2px] border-[#E0C89F] bg-white px-4 py-3 text-right text-[15px] leading-7 text-[#334061] outline-none focus:border-[#364E92]"
+              value={teamMembers}
+              onChange={(event) => setTeamMembers(event.target.value)}
               placeholder="نام و اطلاعات اعضای تیم یا مجموعه را وارد کنید"
             />
           </FieldLabel>
@@ -270,12 +341,16 @@ export function FormPanel() {
             <input
               className={fieldClass}
               type="text"
+              value={experienceTitle}
+              onChange={(event) => setExperienceTitle(event.target.value)}
               placeholder={route === 'solution' ? 'عنوان کوتاه راهکار' : 'حوزه تجربه یا تخصص'}
             />
           </FieldLabel>
           <FieldLabel label={route === 'solution' ? 'شرح راهکار' : 'شرح تجربه و ظرفیت مشارکت'}>
             <textarea
               className="min-h-[150px] w-full resize-y rounded-[14px] border-[1.2px] border-[#E0C89F] bg-white px-4 py-3 text-right text-[15px] leading-7 text-[#334061] outline-none focus:border-[#364E92]"
+              value={experienceDescription}
+              onChange={(event) => setExperienceDescription(event.target.value)}
               placeholder={
                 route === 'solution'
                   ? 'راهکار، نحوه اجرا، مخاطب و ارزش پیشنهادی را توضیح دهید'
@@ -314,7 +389,11 @@ export function FormPanel() {
                 type="file"
                 accept=".rtf,.doc,.docx"
                 className="hidden"
-                onChange={(event) => setFileName(event.target.files?.[0]?.name ?? '')}
+                onChange={(event) => {
+                  const file = event.target.files?.[0] ?? null;
+                  setSelectedFile(file);
+                  setFileName(file?.name ?? '');
+                }}
               />
               <label
                 htmlFor="registration-file"
@@ -337,6 +416,8 @@ export function FormPanel() {
           <FieldLabel label="توضیحات تکمیلی (اختیاری)">
             <textarea
               className="min-h-[100px] w-full resize-y rounded-[14px] border-[1.2px] border-[#E0C89F] bg-white px-4 py-3 text-right text-[15px] leading-7 text-[#334061] outline-none focus:border-[#364E92]"
+              value={extraNotes}
+              onChange={(event) => setExtraNotes(event.target.value)}
               placeholder="اگر نکته دیگری لازم است اینجا بنویسید"
             />
           </FieldLabel>
@@ -370,7 +451,12 @@ export function FormPanel() {
         </div>
 
         <label className="flex cursor-pointer items-start gap-3 rounded-[14px] bg-[#F6F8FD] p-4 text-right">
-          <input type="checkbox" className="mt-1 h-4 w-4 accent-[#364E92]" />
+          <input
+            type="checkbox"
+            checked={confirmed}
+            onChange={(event) => setConfirmed(event.target.checked)}
+            className="mt-1 h-4 w-4 accent-[#364E92]"
+          />
           <span className="text-[14px] leading-7 text-[#334061]">
             اطلاعات واردشده را بررسی کرده‌ام و آماده ارسال نهایی هستم.
           </span>
@@ -404,7 +490,7 @@ export function FormPanel() {
         <div className="text-right">
           <p className="text-[14px] font-medium text-[#616B80]">کد پیگیری پرونده</p>
           <p dir="ltr" className="mt-1 text-right text-[18px] font-medium text-[#182B5E]" style={{ unicodeBidi: 'isolate' }}>
-            {TRACKING_CODE}
+            {trackingCode}
           </p>
         </div>
 
@@ -494,8 +580,9 @@ export function FormPanel() {
                 className="flex h-[46px] w-full cursor-pointer items-center justify-center rounded-[16px] border-0 bg-[#364E92] text-[16px] font-medium text-white transition-colors hover:bg-[#2f447f] sm:w-[220px]"
                 type="button"
                 onClick={handleSubmit}
+                disabled={submitting}
               >
-                ارسال نهایی
+                {submitting ? 'در حال ارسال...' : 'ارسال نهایی'}
               </button>
             )}
           </div>
