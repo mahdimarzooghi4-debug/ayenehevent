@@ -56,8 +56,8 @@ jobs:
 
       - name: Build
         env:
-          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+          VITE_SUPABASE_URL: https://hchtvcrogohhkhfxkfvd.supabase.co
+          VITE_SUPABASE_ANON_KEY: sb_publishable_W2bB-nd4IudheqSHz_5ZIQ_16aChA00
         run: npm run build
 
       - name: Configure Pages
