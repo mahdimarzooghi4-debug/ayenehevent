@@ -12,24 +12,32 @@ import { FAQSection } from './sections/FAQSection';
 import { FooterSection } from './sections/FooterSection';
 import { TrackingPage } from './pages/TrackingPage';
 import { ContactPage } from './pages/ContactPage';
+import { AdminPage } from './pages/AdminPage';
 
 const isTrackingHash = () => window.location.hash.startsWith('#tracking');
 const isContactHash = () => window.location.hash.startsWith('#contact');
+const isAdminHash = () => window.location.hash.startsWith('#admin');
 
 export default function App() {
   const [trackingRoute, setTrackingRoute] = useState(isTrackingHash);
   const [contactRoute, setContactRoute] = useState(isContactHash);
+  const [adminRoute, setAdminRoute] = useState(isAdminHash);
 
   useEffect(() => {
     const handleHashChange = () => {
       setTrackingRoute(isTrackingHash());
       setContactRoute(isContactHash());
+      setAdminRoute(isAdminHash());
       window.scrollTo({ top: 0, behavior: 'auto' });
     };
 
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
+
+  if (adminRoute) {
+    return <AdminPage />;
+  }
 
   if (trackingRoute) {
     return <TrackingPage />;
