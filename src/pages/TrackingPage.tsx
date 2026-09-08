@@ -1,22 +1,13 @@
 import { FormEvent, useMemo, useState } from 'react';
+import { trackRegistration } from '../lib/backend';
 
 type TrackingView = 'form' | 'result' | 'not-found' | 'system-error';
 
 interface TrackingRecord {
   trackingCode: string;
-  phoneLast4: string;
   status: string;
   message: string;
 }
-
-const STORAGE_KEY = 'ayene-registration-demo-record';
-
-const SAMPLE_RECORD: TrackingRecord = {
-  trackingCode: 'AY-1405-00128',
-  phoneLast4: '4567',
-  status: 'در حال بررسی',
-  message: 'پرونده دریافت شده و در مرحله بررسی اولیه است. نتیجه بعدی از همین بخش اعلام می‌شود.',
-};
 
 const normalizeDigits = (value: string) =>
   value
@@ -28,36 +19,13 @@ const getHashCode = () => {
   return new URLSearchParams(query).get('code') ?? '';
 };
 
-const readStoredRecord = (): TrackingRecord | null => {
-  const raw = window.localStorage.getItem(STORAGE_KEY);
-  if (!raw) return null;
-  const parsed = JSON.parse(raw) as Partial<TrackingRecord>;
-  if (!parsed.trackingCode || typeof parsed.phoneLast4 !== 'string') return null;
-
-  return {
-    trackingCode: parsed.trackingCode,
-    phoneLast4: parsed.phoneLast4,
-    status: parsed.status || SAMPLE_RECORD.status,
-    message: parsed.message || SAMPLE_RECORD.message,
-  };
-};
-
 export function TrackingPage() {
   const hashCode = useMemo(() => getHashCode(), []);
-  const initialStoredRecord = useMemo(() => {
-    try {
-      return readStoredRecord();
-    } catch {
-      return null;
-    }
-  }, []);
-
   const [trackingCode, setTrackingCode] = useState(hashCode);
-  const [phoneLast4, setPhoneLast4] = useState(
-    hashCode && initialStoredRecord?.trackingCode === hashCode ? initialStoredRecord.phoneLast4 : '',
-  );
+  const [phoneLast4, setPhoneLast4] = useState('');
   const [view, setView] = useState<TrackingView>('form');
   const [activeRecord, setActiveRecord] = useState<TrackingRecord | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const isResult = view === 'result';
   const isNotFound = view === 'not-found';
@@ -67,20 +35,23 @@ export function TrackingPage() {
     ? 'کد پیگیری ثبت‌نام را وارد کن تا آخرین وضعیت پرونده نمایش داده شود.'
     : 'کد پیگیری و ۴ رقم آخر شماره موبایل ثبت‌شده را وارد کن تا آخرین وضعیت پرونده نمایش داده شود.';
 
-  const handleLookup = (event?: FormEvent) => {
+  const handleLookup = async (event?: FormEvent) => {
     event?.preventDefault();
+    if (loading) return;
 
+    const normalizedCode = trackingCode.trim().toUpperCase();
+    const normalizedPhone = normalizeDigits(phoneLast4).replace(/\D/g, '').slice(-4);
+
+    setLoading(true);
     try {
-      const normalizedCode = trackingCode.trim().toUpperCase();
-      const normalizedPhone = normalizeDigits(phoneLast4).replace(/\D/g, '').slice(-4);
-      const storedRecord = readStoredRecord();
-      const candidates = storedRecord ? [storedRecord, SAMPLE_RECORD] : [SAMPLE_RECORD];
-      const match = candidates.find(
-        (record) => record.trackingCode.toUpperCase() === normalizedCode && record.phoneLast4 === normalizedPhone,
-      );
+      const result = await trackRegistration(normalizedCode, normalizedPhone);
 
-      if (match) {
-        setActiveRecord(match);
+      if (result) {
+        setActiveRecord({
+          trackingCode: String(result.tracking_code ?? normalizedCode),
+          status: String(result.status ?? ''),
+          message: String(result.admin_message ?? ''),
+        });
         setView('result');
         return;
       }
@@ -90,6 +61,8 @@ export function TrackingPage() {
     } catch {
       setActiveRecord(null);
       setView('system-error');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -157,10 +130,8 @@ export function TrackingPage() {
 
               <div className="mt-7 rounded-[20px] border-[1.3px] border-[#364E92] bg-white px-6 py-3 text-right">
                 <p className="text-[14px] font-medium text-[#616B80]">وضعیت پرونده</p>
-                <p className="mt-1 text-[22px] font-medium text-[#182B5E]">{activeRecord?.status ?? SAMPLE_RECORD.status}</p>
-                <p className="mt-2 text-[14px] leading-7 text-[#616B80]">
-                  {activeRecord?.message ?? SAMPLE_RECORD.message}
-                </p>
+                <p className="mt-1 text-[22px] font-medium text-[#182B5E]">{activeRecord?.status ?? ''}</p>
+                <p className="mt-2 text-[14px] leading-7 text-[#616B80]">{activeRecord?.message ?? ''}</p>
               </div>
 
               <div className="mt-[30px] flex justify-end">
@@ -209,11 +180,12 @@ export function TrackingPage() {
 
               <button
                 type="submit"
+                disabled={loading}
                 className={`mx-auto flex h-[54px] w-full max-w-[400px] items-center justify-center rounded-[17px] border-0 bg-[#FB8C74] text-[16px] font-medium text-white transition-colors hover:bg-[#f97d62] ${
                   isNotFound ? 'mt-6' : 'mt-6'
                 }`}
               >
-                {isNotFound ? 'تلاش مجدد' : isSystemError ? 'تلاش دوباره' : 'مشاهده وضعیت'}
+                {loading ? 'در حال دریافت...' : isNotFound ? 'تلاش مجدد' : isSystemError ? 'تلاش دوباره' : 'مشاهده وضعیت'}
               </button>
 
               <p className="mx-auto mt-3 max-w-[600px] text-center text-[14px] leading-7 text-[#616B80]">
