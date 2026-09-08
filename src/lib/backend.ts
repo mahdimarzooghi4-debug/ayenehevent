@@ -78,13 +78,23 @@ export async function getAdminSession() {
   return admin ? { session: data.session, admin } : null;
 }
 
+function inferContentType(file: File) {
+  if (file.type) return file.type;
+  const extension = file.name.split('.').pop()?.toLowerCase();
+  if (extension === 'rtf') return 'application/rtf';
+  if (extension === 'doc') return 'application/msword';
+  if (extension === 'docx') return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+  if (extension === 'pdf') return 'application/pdf';
+  return undefined;
+}
+
 async function uploadRegistrationFile(file: File) {
   const client = requireSupabase();
   const safeName = file.name.replace(/[^\p{L}\p{N}._-]+/gu, '-');
   const path = `${crypto.randomUUID()}/${safeName || 'attachment'}`;
   const { error } = await client.storage.from('registration-files').upload(path, file, {
     upsert: false,
-    contentType: file.type || undefined,
+    contentType: inferContentType(file),
   });
 
   if (error) throw error;
