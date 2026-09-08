@@ -1,4 +1,4 @@
-import { Instagram, MessageCircle, Send } from 'lucide-react';
+import { Instagram, Send } from 'lucide-react';
 
 const linkClass =
   'text-[15px] leading-8 text-white/95 transition-colors hover:text-[#FB8C74] sm:text-[16px]';
@@ -57,7 +57,14 @@ export function FooterSection() {
 
             <div className="mt-5 flex items-center gap-4 text-[#E0C89F]">
               <a href="#" aria-label="بله" className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E0C89F]/30 transition-all hover:border-[#FB8C74] hover:text-[#FB8C74]">
-                <MessageCircle size={21} strokeWidth={2} />
+                <img
+                  src="./images/bale-figma-exact.svg"
+                  alt=""
+                  aria-hidden="true"
+                  className="h-5 w-5 object-contain"
+                  width={20}
+                  height={20}
+                />
               </a>
               <a href="#" aria-label="اینستاگرام" className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E0C89F]/30 transition-all hover:border-[#FB8C74] hover:text-[#FB8C74]">
                 <Instagram size={21} strokeWidth={2} />
