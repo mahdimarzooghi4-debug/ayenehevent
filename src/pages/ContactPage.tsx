@@ -8,14 +8,14 @@ const fieldClass =
 
 function ContactStepsCard() {
   const steps = [
-    'شماره‌ات را ثبت می‌کنی',
-    'درخواست برای تیم دبیرخانه ثبت می‌شود',
-    'تیم دبیرخانه با تو تماس می‌گیرد',
+    { number: '۱', text: 'شماره‌ات را ثبت می‌کنی' },
+    { number: '۲', text: 'درخواست برای تیم دبیرخانه ثبت می‌شود' },
+    { number: '۳', text: 'تیم دبیرخانه با تو تماس می‌گیرد' },
   ];
 
   return (
     <aside className="w-full rounded-[24px] bg-[#182B5E] px-6 py-7 text-white lg:h-[430px] lg:w-[380px] lg:shrink-0 lg:px-11">
-      <div className="mb-5 flex justify-start lg:justify-end">
+      <div className="mb-5 flex justify-start">
         <span className="inline-flex h-[34px] min-w-[168px] items-center justify-center rounded-[17px] bg-[#FDF1EC] px-5 text-[13px] font-medium text-[#FB8C74]">
           روند تماس
         </span>
@@ -29,12 +29,12 @@ function ContactStepsCard() {
       </h2>
 
       <div className="space-y-5">
-        {steps.map((step, index) => (
-          <div key={step} className="flex items-center gap-4">
+        {steps.map((step) => (
+          <div key={step.number} className="flex items-center gap-4">
             <div className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full bg-[#FB8C74] text-[14px] font-medium text-white">
-              {index + 1}
+              {step.number}
             </div>
-            <p className="text-right text-[15px] font-medium leading-6 text-white">{step}</p>
+            <p className="text-right text-[15px] font-medium leading-6 text-white">{step.text}</p>
           </div>
         ))}
       </div>
@@ -126,7 +126,7 @@ function ContactForm({ onSuccess }: { onSuccess: () => void }) {
         </span>
       </label>
 
-      <div className="mt-4 flex justify-start lg:justify-end">
+      <div className="mt-4 flex justify-start">
         <button
           type="submit"
           disabled={!consent}
@@ -143,7 +143,7 @@ function ContactForm({ onSuccess }: { onSuccess: () => void }) {
 
 function ContactSuccess() {
   return (
-    <div className="flex min-h-[430px] w-full flex-col items-end justify-center rounded-[26px] border-[1.4px] border-[#E0C89F] bg-white px-6 py-8 text-right sm:px-10 lg:w-[820px] lg:px-10">
+    <div className="flex min-h-[430px] w-full flex-col items-start justify-center rounded-[26px] border-[1.4px] border-[#E0C89F] bg-white px-6 py-8 text-right sm:px-10 lg:w-[820px] lg:px-10">
       <div className="flex h-[92px] w-[92px] items-center justify-center rounded-full bg-[#EDF7F0] text-[42px] font-medium text-[#2B7347]">
         ✓
       </div>
@@ -184,18 +184,20 @@ export function ContactPage() {
     >
       <header className="bg-white">
         <div className="mx-auto flex min-h-[104px] w-full max-w-[1440px] items-center justify-between border-b border-[#E0C89F] px-6 sm:px-8 lg:px-[100px]">
+          <div className="flex h-[58px] w-[170px] items-center justify-center rounded-[8px] border-2 border-[#333] bg-white sm:h-[78px] sm:w-[230px]">
+            <img
+              src={LOGO_URL}
+              alt="رویداد ملی خلاقیت و نوآوری آینه"
+              className="h-full w-full rounded-[8px] object-contain"
+            />
+          </div>
+
           <a
             href="#home"
-            className="flex h-[52px] w-[180px] items-center justify-center rounded-[16px] border-[1.2px] border-[#364E92] bg-white text-[14px] font-medium text-[#364E92] sm:w-[220px] sm:text-[15px]"
+            className="flex h-[52px] w-[160px] items-center justify-center rounded-[16px] border-[1.2px] border-[#364E92] bg-white text-[13px] font-medium text-[#364E92] sm:w-[220px] sm:text-[15px]"
           >
             بازگشت به صفحه اصلی
           </a>
-
-          <img
-            src={LOGO_URL}
-            alt="رویداد ملی خلاقیت و نوآوری آینه"
-            className="h-auto w-[170px] object-contain sm:w-[230px]"
-          />
         </div>
       </header>
 
@@ -212,12 +214,12 @@ export function ContactPage() {
         >
           درخواست تماس از دبیرخانه
         </h1>
-        <div className="mt-2 h-[5px] w-[72px] rounded-[3px] bg-[#FB8C74]" />
-        <p className="mt-5 max-w-[690px] text-right text-[17px] leading-[30px] text-[#334061] sm:text-[18px]">
+        <div className="ml-auto mt-2 h-[5px] w-[72px] rounded-[3px] bg-[#FB8C74]" />
+        <p className="ml-auto mt-5 max-w-[690px] text-right text-[17px] leading-[30px] text-[#334061] sm:text-[18px]">
           شماره و اطلاعات لازم را ثبت کن؛ تیم دبیرخانه بر اساس درخواستت با تو تماس می‌گیرد.
         </p>
 
-        <div className="mt-10 flex flex-col gap-10 lg:flex-row">
+        <div className="mt-4 flex flex-col gap-10 lg:flex-row">
           {submitted ? <ContactSuccess /> : <ContactForm onSuccess={() => setSubmitted(true)} />}
           <ContactStepsCard />
         </div>
