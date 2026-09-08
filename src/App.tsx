@@ -23,6 +23,17 @@ if ('scrollRestoration' in window.history) {
   window.history.scrollRestoration = 'manual';
 }
 
+const initialHash = window.location.hash;
+const initialHashIsPageRoute =
+  initialHash.startsWith('#tracking') ||
+  initialHash.startsWith('#contact') ||
+  initialHash.startsWith('#admin');
+
+if (initialHash && !initialHashIsPageRoute) {
+  window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+  window.scrollTo({ top: 0, behavior: 'auto' });
+}
+
 export default function App() {
   const [trackingRoute, setTrackingRoute] = useState(isTrackingHash);
   const [contactRoute, setContactRoute] = useState(isContactHash);
