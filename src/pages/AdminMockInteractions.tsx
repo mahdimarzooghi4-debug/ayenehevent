@@ -150,6 +150,19 @@ function restoreSettings() {
   }
 }
 
+function setPhoneDirection() {
+  const main = document.querySelector('main');
+  if (!main) return;
+
+  for (const node of Array.from(main.querySelectorAll<HTMLElement>('p, span'))) {
+    const value = normalizeLabel(node.textContent);
+    if (!/^(?:۰۹|09)/.test(value)) continue;
+    node.dir = 'ltr';
+    node.style.unicodeBidi = 'isolate';
+    node.style.textAlign = 'right';
+  }
+}
+
 function addInfoRow(container: HTMLElement, label: string, value: string) {
   const row = document.createElement('div');
   Object.assign(row.style, { padding: '10px 0', borderBottom: '1px solid #E7EAF2' });
@@ -161,6 +174,11 @@ function addInfoRow(container: HTMLElement, label: string, value: string) {
   const valueNode = document.createElement('div');
   valueNode.textContent = value;
   Object.assign(valueNode.style, { marginTop: '4px', fontSize: '14px', color: '#182B5E', fontWeight: '500' });
+  if (label === 'شماره تماس') {
+    valueNode.dir = 'ltr';
+    valueNode.style.unicodeBidi = 'isolate';
+    valueNode.style.textAlign = 'right';
+  }
 
   row.append(labelNode, valueNode);
   container.appendChild(row);
@@ -286,6 +304,7 @@ function refreshBindingsAndState() {
   bindButtons();
   restoreDraft();
   restoreSettings();
+  setPhoneDirection();
 }
 
 export function AdminMockInteractions() {
