@@ -1,4 +1,4 @@
-const PHOTO_URL = './images/hero-exact.webp';
+const PHOTO_URL = `${import.meta.env.BASE_URL}images/hero-figma-exact.png`;
 
 export function Hero() {
   return (
@@ -22,21 +22,27 @@ export function Hero() {
         </p>
 
         <div className="flex w-full flex-col items-stretch gap-3 sm:w-auto sm:flex-row sm:items-center sm:gap-4">
-          <a href="#register" className="flex h-[54px] items-center justify-center whitespace-nowrap rounded-full bg-[#FB8C74] px-7 text-[16px] font-medium text-white transition-colors hover:bg-[#f97d62] sm:h-[58px] sm:w-[240px] sm:px-8 sm:text-[17px]">
+          <a
+            href="#register"
+            className="flex h-[54px] items-center justify-center whitespace-nowrap rounded-full bg-[#FB8C74] px-7 text-[16px] font-medium text-white transition-colors hover:bg-[#f97d62] sm:h-[58px] sm:w-[240px] sm:px-8 sm:text-[17px]"
+          >
             ثبت‌نام در رویداد
           </a>
-          <a href="#axes" className="flex h-[54px] items-center justify-center whitespace-nowrap rounded-full border border-[#364E92] bg-white px-7 text-[16px] font-medium text-[#364E92] transition-colors hover:bg-[#f0f3ff] sm:h-[58px] sm:w-[238px] sm:px-8 sm:text-[17px]">
+          <a
+            href="#axes"
+            className="flex h-[54px] items-center justify-center whitespace-nowrap rounded-full border border-[#364E92] bg-white px-7 text-[16px] font-medium text-[#364E92] transition-colors hover:bg-[#f0f3ff] sm:h-[58px] sm:w-[238px] sm:px-8 sm:text-[17px]"
+          >
             مشاهده نظام مسائل
           </a>
         </div>
       </div>
 
       <div className="flex w-full shrink-0 flex-col items-center lg:w-[544px]">
-        <div className="relative aspect-[544/317] w-full max-w-[544px] overflow-hidden rounded-[22px] bg-[#F9F7F1] shadow-[0_12px_28px_rgba(24,43,94,0.08)] sm:rounded-[26px]">
+        <div className="w-full max-w-[544px]">
           <img
             src={PHOTO_URL}
             alt="تیم کاری رویداد آینه"
-            className="h-full w-full object-cover object-center"
+            className="h-auto w-full object-contain"
             width={1088}
             height={634}
             loading="eager"
