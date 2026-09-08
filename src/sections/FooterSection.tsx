@@ -50,7 +50,7 @@ export function FooterSection() {
             <h3 className="mb-4 text-[17px] font-bold text-[#E0C89F] sm:text-[18px]">ارتباط با ما</h3>
             <div className="flex flex-col gap-1">
               <a href="#register" className={linkClass}>پیگیری ثبت‌نام</a>
-              <a href="#footer" className={linkClass}>تماس با دبیرخانه</a>
+              <a href="#contact" className={linkClass}>تماس با دبیرخانه</a>
             </div>
 
             <div className="mt-5 flex items-center gap-4 text-[#E0C89F]">
