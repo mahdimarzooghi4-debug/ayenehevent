@@ -51,8 +51,8 @@ export default function AxesSection() {
   const activeAxis = axes.find((axis) => axis.id === activeId) ?? axes[0];
 
   return (
-    <section id="axes" dir="rtl" className="bg-[#FBFAF7] px-6 py-20 lg:px-[100px]">
-      <div className="mx-auto max-w-[1440px]">
+    <section id="axes" dir="rtl" className="bg-[#FBFAF7] py-20">
+      <div className="mx-auto w-full max-w-[1440px] px-6 lg:px-[100px]">
         <div className="mb-12 text-right">
           <p className="mb-2 text-[15px] font-medium leading-[1.56] text-[#FB8C74]">محورها و نظام مسائل</p>
           <h2 className="mb-3 text-[36px] font-extrabold leading-none text-[#182B5E] lg:text-[42px]">۵ محور رویداد</h2>
