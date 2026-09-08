@@ -12,15 +12,17 @@ export function FooterSection() {
         <div className="grid grid-cols-2 gap-x-6 gap-y-9 md:grid-cols-4 xl:grid-cols-[1.25fr_.7fr_.75fr_.85fr_1.25fr] xl:items-start xl:gap-6 2xl:gap-10">
           {/* برند رویداد */}
           <div className="col-span-2 flex flex-col items-start md:col-span-4 xl:col-span-1">
-            <div className="flex h-[118px] w-full items-center justify-center rounded-[14px] border border-[#E0C89F] bg-[#FAF9F7] px-5 sm:h-[128px] xl:h-[136px] 2xl:h-[145px]">
+            <div className="flex h-[100px] w-full max-w-[290px] items-center justify-center overflow-hidden rounded-[8px] border-2 border-[#333333] bg-[#F6F1E8]">
               <img
-                src="./images/ayene-event-logo.webp"
+                src="./images/ayene-logo-figma-exact.png"
                 alt="رویداد ملی خلاقیت و نوآوری آینه"
-                className="max-h-[84px] max-w-full object-contain sm:max-h-[92px] 2xl:max-h-[105px]"
+                className="h-full w-full object-contain"
+                width={290}
+                height={100}
               />
             </div>
 
-            <p className="mt-3 w-full text-center text-[15px] font-medium text-[#E0C89F] sm:text-[16px] 2xl:text-[17px]">
+            <p className="mt-3 w-full max-w-[310px] text-center text-[15px] font-medium text-[#E0C89F] sm:text-[16px] 2xl:text-[17px]">
               مسئله را ببین<span className="text-[#FB8C74]">؛</span> راهکار را بساز
             </p>
           </div>
@@ -70,20 +72,24 @@ export function FooterSection() {
           <div className="col-span-2 md:col-span-3 xl:col-span-1">
             <h3 className="mb-4 text-right text-[17px] font-bold text-[#E0C89F] sm:text-[18px]">برگزارکنندگان</h3>
 
-            <div className="grid grid-cols-2 gap-3">
-              <div className="flex min-h-[116px] min-w-0 items-center justify-center rounded-[16px] border border-[#E0C89F] bg-[#FAF9F7] p-3 sm:min-h-[130px] xl:h-[145px] 2xl:h-[155px]">
+            <div className="grid w-full grid-cols-2 gap-[6px] xl:w-[302px]">
+              <div className="flex h-[112px] min-w-0 items-center justify-center rounded-[14px] border border-[#5067A4] bg-[#F6F1E8] p-0">
                 <img
                   src="./images/committee-logo.webp"
                   alt="کمیته امداد امام خمینی"
-                  className="max-h-[94px] max-w-full object-contain sm:max-h-[106px] xl:max-h-[118px] 2xl:max-h-[125px]"
+                  className="h-[99px] w-[133px] max-w-full object-contain"
+                  width={133}
+                  height={99}
                 />
               </div>
 
-              <div className="flex min-h-[116px] min-w-0 items-center justify-center rounded-[16px] border border-[#E0C89F] bg-[#FAF9F7] p-3 sm:min-h-[130px] xl:h-[145px] 2xl:h-[155px]">
+              <div className="flex h-[112px] min-w-0 items-center justify-center rounded-[14px] border border-[#E0C89F] bg-[#F6F1E8] p-0">
                 <img
                   src="./images/creative-house-logo.webp"
                   alt="خانه خلاق و نوآوری آینه"
-                  className="max-h-[88px] max-w-full object-contain sm:max-h-[100px] xl:max-h-[112px] 2xl:max-h-[120px]"
+                  className="h-[96px] w-[128px] max-w-full object-contain"
+                  width={128}
+                  height={96}
                 />
               </div>
             </div>
