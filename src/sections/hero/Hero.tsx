@@ -1,4 +1,4 @@
-const PHOTO_URL = `${import.meta.env.BASE_URL}images/hero-exact.webp`;
+const PHOTO_URL = './images/hero-exact.webp';
 
 export function Hero() {
   return (
