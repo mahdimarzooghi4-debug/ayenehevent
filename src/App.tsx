@@ -15,6 +15,7 @@ import { ContactPage } from './pages/ContactPage';
 import { AdminPage } from './pages/AdminPage';
 import { AdminSecureDownloads } from './pages/AdminSecureDownloads';
 import { AdminPasswordSettings } from './pages/AdminPasswordSettings';
+import { AdminSitePresentationSettings } from './pages/AdminSitePresentationSettings';
 import { AdminAuditTrail } from './pages/AdminAuditTrail';
 import { AdminDataExports } from './pages/AdminDataExports';
 
@@ -44,6 +45,7 @@ export default function App() {
       <>
         <AdminPage />
         <AdminSecureDownloads />
+        <AdminSitePresentationSettings />
         <AdminPasswordSettings />
         <AdminAuditTrail />
         <AdminDataExports />
