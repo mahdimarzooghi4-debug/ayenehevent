@@ -43,6 +43,8 @@ const stepMeta = [
 const fieldClass =
   'h-12 w-full rounded-[14px] border-[1.2px] border-[#E0C89F] bg-white px-4 text-right text-[15px] font-normal text-[#334061] outline-none transition focus:border-[#364E92]';
 
+const TRACKING_CODE = 'AY-1405-00128';
+
 interface FieldLabelProps {
   label: string;
   children: React.ReactNode;
@@ -89,17 +91,23 @@ export function FormPanel() {
   const [selectedIssue, setSelectedIssue] = useState(axes[0].issues[0]);
   const [fileName, setFileName] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [trackingCopied, setTrackingCopied] = useState(false);
 
   const activeAxis = axes.find((axis) => axis.title === selectedAxis) ?? axes[0];
   const currentMeta = stepMeta[currentStep - 1];
   const canContinue = currentStep !== 5 || Boolean(fileName);
 
-  const moveToStep = (step: number) => {
-    setCurrentStep(step);
-    setSubmitted(false);
+  const scrollPanelToTop = () => {
     requestAnimationFrame(() => {
       panelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
+  };
+
+  const moveToStep = (step: number) => {
+    setCurrentStep(step);
+    setSubmitted(false);
+    setTrackingCopied(false);
+    scrollPanelToTop();
   };
 
   const handleNext = () => {
@@ -114,6 +122,22 @@ export function FormPanel() {
     setSelectedAxis(value);
     const nextAxis = axes.find((axis) => axis.title === value) ?? axes[0];
     setSelectedIssue(nextAxis.issues[0]);
+  };
+
+  const handleSubmit = () => {
+    setSubmitted(true);
+    setTrackingCopied(false);
+    scrollPanelToTop();
+  };
+
+  const handleCopyTrackingCode = async () => {
+    try {
+      await navigator.clipboard.writeText(TRACKING_CODE);
+      setTrackingCopied(true);
+      window.setTimeout(() => setTrackingCopied(false), 1800);
+    } catch {
+      setTrackingCopied(false);
+    }
   };
 
   const renderStep = () => {
@@ -316,15 +340,49 @@ export function FormPanel() {
             اطلاعات واردشده را بررسی کرده‌ام و آماده ارسال نهایی هستم.
           </span>
         </label>
-
-        {submitted && (
-          <div className="rounded-[14px] border border-[#E0C89F] bg-[#FDF8EE] px-4 py-3 text-right text-[14px] leading-7 text-[#334061]">
-            مراحل فرم تکمیل شده است. اتصال ارسال نهایی به سامانه ثبت‌نام می‌تواند در مرحله بعد انجام شود.
-          </div>
-        )}
       </div>
     );
   };
+
+  const renderSuccess = () => (
+    <div className="flex flex-col items-center px-1 pb-1 pt-5 text-center sm:pt-7">
+      <div className="flex h-[110px] w-[110px] items-center justify-center rounded-full border-[1.5px] border-[#29804F] bg-[#F6F8FD] text-[38px] font-medium text-[#29804F]">
+        ✓
+      </div>
+
+      <h3 className="mt-5 text-[23px] font-medium leading-[1.7] text-[#182B5E] sm:text-[26px]">
+        ثبت‌نام با موفقیت ارسال شد
+      </h3>
+
+      <button
+        type="button"
+        className="mt-1 flex h-[44px] w-full max-w-[220px] items-center justify-center rounded-[14px] border-[1.4px] border-[#364E92] bg-white text-[14px] font-medium text-[#364E92]"
+        title="پس از اتصال بک‌اند، وضعیت پرونده از این بخش قابل پیگیری خواهد بود"
+      >
+        پیگیری وضعیت ثبت‌نام
+      </button>
+
+      <div
+        id="tracking-code-card"
+        className="mt-2 flex w-full max-w-[620px] flex-col gap-3 rounded-[18px] border-[1.2px] border-[#E0C89F] bg-[#F6F8FD] px-5 py-3 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <div className="text-right">
+          <p className="text-[14px] font-medium text-[#616B80]">کد پیگیری پرونده</p>
+          <p dir="ltr" className="mt-1 text-right text-[18px] font-medium text-[#182B5E]" style={{ unicodeBidi: 'isolate' }}>
+            {TRACKING_CODE}
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={handleCopyTrackingCode}
+          className="flex h-[44px] w-full items-center justify-center rounded-[14px] border-[1.2px] border-[#364E92] bg-white px-4 text-[14px] font-medium text-[#364E92] sm:w-[156px]"
+        >
+          {trackingCopied ? 'کپی شد' : 'کپی کد پیگیری'}
+        </button>
+      </div>
+    </div>
+  );
 
   return (
     <div
@@ -352,56 +410,62 @@ export function FormPanel() {
       </h2>
 
       <p className="mb-7 text-right text-[15px] font-normal leading-[1.7] text-[#334061] sm:mb-8 sm:text-[16px]">
-        اطلاعات ثبت‌نام در ۶ مرحله تکمیل می‌شود.
+        {submitted ? 'پرونده ثبت‌نام با موفقیت ارسال شده است.' : 'اطلاعات ثبت‌نام در ۶ مرحله تکمیل می‌شود.'}
       </p>
 
       <div className="mb-8 w-full">
         <StepProgress currentStep={currentStep} />
       </div>
 
-      <h3 className="mb-1 text-right text-[20px] font-medium text-[#182B5E] sm:text-[22px]">
-        {currentMeta.title}
-      </h3>
-      <p className="mb-6 text-right text-[14px] font-normal text-[#616B80]">{currentMeta.description}</p>
+      {submitted ? (
+        renderSuccess()
+      ) : (
+        <>
+          <h3 className="mb-1 text-right text-[20px] font-medium text-[#182B5E] sm:text-[22px]">
+            {currentMeta.title}
+          </h3>
+          <p className="mb-6 text-right text-[14px] font-normal text-[#616B80]">{currentMeta.description}</p>
 
-      <div className="mb-8">{renderStep()}</div>
+          <div className="mb-8">{renderStep()}</div>
 
-      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
-        {currentStep > 1 ? (
-          <button
-            className="flex h-[46px] w-full cursor-pointer items-center justify-center rounded-[16px] border border-[#364E92] bg-white text-[16px] font-medium text-[#364E92] transition-colors hover:bg-[#F6F8FD] sm:w-[180px]"
-            type="button"
-            onClick={handleBack}
-          >
-            بازگشت
-          </button>
-        ) : (
-          <div />
-        )}
+          <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
+            {currentStep > 1 ? (
+              <button
+                className="flex h-[46px] w-full cursor-pointer items-center justify-center rounded-[16px] border border-[#364E92] bg-white text-[16px] font-medium text-[#364E92] transition-colors hover:bg-[#F6F8FD] sm:w-[180px]"
+                type="button"
+                onClick={handleBack}
+              >
+                بازگشت
+              </button>
+            ) : (
+              <div />
+            )}
 
-        {currentStep < 6 ? (
-          <button
-            className={`flex h-[46px] w-full items-center justify-center rounded-[16px] border-0 text-[16px] font-medium text-white transition-colors sm:w-[220px] ${
-              canContinue
-                ? 'cursor-pointer bg-[#FB8C74] hover:bg-[#f97d62]'
-                : 'cursor-not-allowed bg-[#D9A99E] opacity-70'
-            }`}
-            type="button"
-            onClick={handleNext}
-            disabled={!canContinue}
-          >
-            ادامه
-          </button>
-        ) : (
-          <button
-            className="flex h-[46px] w-full cursor-pointer items-center justify-center rounded-[16px] border-0 bg-[#364E92] text-[16px] font-medium text-white transition-colors hover:bg-[#2f447f] sm:w-[220px]"
-            type="button"
-            onClick={() => setSubmitted(true)}
-          >
-            تأیید نهایی
-          </button>
-        )}
-      </div>
+            {currentStep < 6 ? (
+              <button
+                className={`flex h-[46px] w-full items-center justify-center rounded-[16px] border-0 text-[16px] font-medium text-white transition-colors sm:w-[220px] ${
+                  canContinue
+                    ? 'cursor-pointer bg-[#FB8C74] hover:bg-[#f97d62]'
+                    : 'cursor-not-allowed bg-[#D9A99E] opacity-70'
+                }`}
+                type="button"
+                onClick={handleNext}
+                disabled={!canContinue}
+              >
+                ادامه
+              </button>
+            ) : (
+              <button
+                className="flex h-[46px] w-full cursor-pointer items-center justify-center rounded-[16px] border-0 bg-[#364E92] text-[16px] font-medium text-white transition-colors hover:bg-[#2f447f] sm:w-[220px]"
+                type="button"
+                onClick={handleSubmit}
+              >
+                ارسال نهایی
+              </button>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }
