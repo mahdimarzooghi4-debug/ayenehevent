@@ -60,6 +60,13 @@ jobs:
           VITE_SUPABASE_ANON_KEY: sb_publishable_W2bB-nd4IudheqSHz_5ZIQ_16aChA00
         run: npm run build
 
+      - name: Preserve legacy asset paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist/ayenehevent/images
+          cp -a public/images/. dist/ayenehevent/images/
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
