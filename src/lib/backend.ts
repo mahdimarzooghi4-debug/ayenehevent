@@ -125,8 +125,9 @@ function inferContentType(file: File) {
 
 async function uploadRegistrationFile(file: File) {
   const client = requireSupabase();
-  const safeName = file.name.replace(/[^\p{L}\p{N}._-]+/gu, '-');
-  const path = `${crypto.randomUUID()}/${safeName || 'attachment'}`;
+  const extension = file.name.split('.').pop()?.toLowerCase();
+  const allowedExtension = extension && ['rtf', 'doc', 'docx', 'pdf'].includes(extension) ? extension : null;
+  const path = `${crypto.randomUUID()}/attachment${allowedExtension ? `.${allowedExtension}` : ''}`;
   const { error } = await client.storage.from('registration-files').upload(path, file, {
     upsert: false,
     contentType: inferContentType(file),
