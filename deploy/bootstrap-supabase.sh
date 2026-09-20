@@ -20,8 +20,8 @@ cp -a "$tmp/supabase/docker/." "$INSTALL_DIR/"
 cd "$INSTALL_DIR"
 cp .env.example .env
 # Generate *new* self-hosted secrets. Do not copy cloud service_role secrets.
-sh utils/generate-keys.sh
-sh utils/add-new-auth-keys.sh
+sh utils/generate-keys.sh --update-env >/dev/null
+sh utils/add-new-auth-keys.sh --update-env >/dev/null
 PUBLIC_API_URL="$PUBLIC_API_URL" PUBLIC_SITE_URL="$PUBLIC_SITE_URL" python3 - <<'PY'
 from pathlib import Path
 import os,re
