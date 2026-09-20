@@ -15,7 +15,7 @@ import {
   type CmsRegistration,
 } from '../lib/backend';
 
-const LOGO_URL = '/ayenehevent/images/ayene-logo-figma-exact.png';
+const LOGO_URL = `${import.meta.env.BASE_URL}images/ayene-logo-figma-exact.png`;
 
 type SidebarKey = 'files' | 'search' | 'contacts' | 'settings';
 type RegistrationUpdate = { code: string; status: string; message: string };
