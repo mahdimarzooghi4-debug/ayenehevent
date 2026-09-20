@@ -24,6 +24,17 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Validate Iranian deployment scripts
+        run: |
+          bash -n deploy/bootstrap-supabase.sh deploy/export-cloud.sh
+          node --check deploy/verify-public.mjs
+
+      - name: Validate Iranian web Docker Compose
+        env:
+          VITE_SUPABASE_URL: https://api.event.ayenehouse.ir
+          VITE_SUPABASE_ANON_KEY: sb_publishable_ci_placeholder
+        run: docker compose -f deploy/docker-compose.web.yml config -q
+
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
