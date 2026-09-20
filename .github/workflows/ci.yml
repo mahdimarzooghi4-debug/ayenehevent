@@ -26,7 +26,8 @@ jobs:
 
       - name: Validate Iranian deployment scripts
         run: |
-          bash -n deploy/bootstrap-supabase.sh deploy/export-cloud.sh
+          bash -n deploy/bootstrap-supabase.sh
+          bash -n deploy/export-cloud.sh
           node --check deploy/verify-public.mjs
 
       - name: Validate Iranian web Docker Compose
