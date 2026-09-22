@@ -67,7 +67,11 @@ Deno.serve(async (req: Request) => {
       .createSignedUrl(path, 300, { download: fileName });
     if (signedError) throw signedError;
 
-    return new Response(JSON.stringify({ url: signed.signedUrl, expiresIn: 300 }), {
+    // Storage signs against its internal Docker URL (http://kong:8000).
+    // Preserve the signed path/query while returning a browser-reachable HTTPS URL.
+    const signedUrl = new URL(signed.signedUrl);
+    const publicUrl = new URL(`${signedUrl.pathname}${signedUrl.search}`, 'https://api.event.ayenehouse.ir').toString();
+    return new Response(JSON.stringify({ url: publicUrl, expiresIn: 300 }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
     });
