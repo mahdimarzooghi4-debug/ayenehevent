@@ -1,0 +1,12 @@
+# Install on the Iranian VPS as /etc/caddy/Caddyfile.
+# A and AAAA records must resolve inside Iran: both hostnames -> the VPS.
+# Obtain certificates while reachable and monitor renewals. For fully offline
+# certificate renewal, configure an appropriate domestic certificate issuer.
+event.ayenehouse.ir {
+    encode zstd gzip
+    reverse_proxy 127.0.0.1:8080
+}
+api.event.ayenehouse.ir {
+    encode zstd gzip
+    reverse_proxy 127.0.0.1:8000
+}

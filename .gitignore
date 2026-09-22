@@ -5,3 +5,6 @@ dist/
 .env
 .env.*
 !.env.example
+
+private-exports/
+deploy/*.env

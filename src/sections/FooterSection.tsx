@@ -56,7 +56,7 @@ export function FooterSection() {
             </div>
 
             <div className="mt-5 flex items-center gap-4 text-[#E0C89F]">
-              <a href="#" aria-label="بله" className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E0C89F]/30 transition-all hover:border-[#FB8C74] hover:text-[#FB8C74]">
+              <a href="http://ble.ir/eventayeneh" target="_blank" rel="noopener noreferrer" aria-label="بله" className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E0C89F]/30 transition-all hover:border-[#FB8C74] hover:text-[#FB8C74]">
                 <img
                   src="./images/bale-figma-exact.svg"
                   alt=""
@@ -66,10 +66,10 @@ export function FooterSection() {
                   height={20}
                 />
               </a>
-              <a href="#" aria-label="اینستاگرام" className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E0C89F]/30 transition-all hover:border-[#FB8C74] hover:text-[#FB8C74]">
+              <a href="https://www.instagram.com/eventayeneh/" target="_blank" rel="noopener noreferrer" aria-label="اینستاگرام" className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E0C89F]/30 transition-all hover:border-[#FB8C74] hover:text-[#FB8C74]">
                 <Instagram size={21} strokeWidth={2} />
               </a>
-              <a href="#" aria-label="تلگرام" className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E0C89F]/30 transition-all hover:border-[#FB8C74] hover:text-[#FB8C74]">
+              <a href="https://t.me/eventayeneh" target="_blank" rel="noopener noreferrer" aria-label="تلگرام" className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E0C89F]/30 transition-all hover:border-[#FB8C74] hover:text-[#FB8C74]">
                 <Send size={21} strokeWidth={2} />
               </a>
             </div>
