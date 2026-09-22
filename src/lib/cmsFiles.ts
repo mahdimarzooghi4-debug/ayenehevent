@@ -12,5 +12,10 @@ export async function getCmsRegistrationFileDownloadUrl(path: string) {
   if (error) throw error;
   if (!data?.url) throw new Error('لینک دانلود فایل ساخته نشد.');
 
-  return String(data.url);
+  // Self-hosted Storage may sign URLs using the internal Docker hostname
+  // (e.g. http://kong:8000), which is not resolvable in the administrator's browser.
+  // Keep the signed path and query intact, but serve them from the public API origin.
+  const publicApiUrl = new URL(import.meta.env.VITE_SUPABASE_URL);
+  const signedUrl = new URL(String(data.url), publicApiUrl);
+  return new URL(`${signedUrl.pathname}${signedUrl.search}`, publicApiUrl).toString();
 }
