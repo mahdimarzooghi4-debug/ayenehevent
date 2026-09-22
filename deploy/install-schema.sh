@@ -4,7 +4,7 @@ set -Eeuo pipefail
 cd "$(dirname "$0")/.."
 docker inspect supabase-db --format '{{.State.Running}}' | grep -qx true || { echo "Database container down" >&2; exit 1; }
 ready=$(docker exec supabase-db psql -U postgres -d postgres -Atqc "select (to_regclass('auth.users') is not null and to_regclass('storage.objects') is not null)::text")
-[[ "$ready" == t ]] || { echo "Wait for Auth and Storage foundation; db container alone is NOT enough." >&2; exit 1; }
+[[ "$ready" == true ]] || { echo "Wait for Auth and Storage foundation; db container alone is NOT enough." >&2; exit 1; }
 existing=$(docker exec supabase-db psql -U postgres -d postgres -Atqc "select count(*) from pg_tables where schemaname='public'")
 [[ "$existing" == 0 ]] || { echo "Public schema nonempty ($existing tables); refusing to overwrite." >&2; exit 1; }
 shopt -s nullglob
